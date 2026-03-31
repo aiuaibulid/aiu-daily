@@ -433,9 +433,27 @@
     }).join('');
   }
 
-  // ── Long/Short (static notice) ────────────────────────────
-  function setLSStatic() {
-    $('ls-value').innerHTML = '<span style="font-size:12px;">受 CORS 限制，無法即時抓取</span><br><span style="font-size:11px; color:#484f58;">請前往 coinglass.com 查看</span>';
+  // ── Fetch Long/Short Ratio (Binance Futures API) ─────────
+  async function fetchLS() {
+    const res = await fetch(
+      'https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=BTCUSDT&period=5m&limit=1'
+    );
+    const json = await res.json();
+    const d = json[0];
+    const longPct  = (parseFloat(d.longAccount)  * 100).toFixed(1);
+    const shortPct = (parseFloat(d.shortAccount) * 100).toFixed(1);
+    const ratio    = parseFloat(d.longShortRatio).toFixed(2);
+
+    $('ls-value').innerHTML =
+      `<span style="color:#3fb950;font-size:22px;font-weight:700;">${longPct}%</span>` +
+      `<span style="color:#484f58;font-size:14px;"> / </span>` +
+      `<span style="color:#f85149;font-size:22px;font-weight:700;">${shortPct}%</span>`;
+
+    $('ls-wrap').style.display = 'block';
+    $('ls-long-bar').style.flex  = longPct;
+    $('ls-short-bar').style.flex = shortPct;
+    $('ls-long-pct').textContent  = `多方 ${longPct}%`;
+    $('ls-short-pct').textContent = `空方 ${shortPct}%`;
   }
 
   // ── Countdown Timer ───────────────────────────────────────
@@ -465,10 +483,9 @@
     const results = await Promise.allSettled([
       fetchFNG(),
       fetchGlobal(),
-      fetchTokens()
+      fetchTokens(),
+      fetchLS()
     ]);
-
-    setLSStatic();
 
     const failed = results.filter(r => r.status === 'rejected').length;
     const now = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
