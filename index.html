@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIU每日新聞 · 即時版</title>
+  <title>AIU Daily · Crypto News</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -21,33 +21,49 @@
       border-bottom: 1px solid #f0b42933;
       padding: 28px 40px 20px;
       text-align: center;
+      position: relative;
     }
     .header-logo { font-size: 12px; color: #f0b429; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
     .header h1 { font-size: 30px; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .header h1 span { color: #f0b429; }
     .header-date { font-size: 14px; color: #8b949e; }
 
+    /* ── Lang Switcher ── */
+    .lang-switcher {
+      position: absolute;
+      top: 20px; right: 24px;
+      display: flex; gap: 4px;
+    }
+    .lang-btn {
+      font-size: 11px; font-weight: 600;
+      color: #8b949e;
+      background: transparent;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 4px 9px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .lang-btn:hover { color: #e6edf3; border-color: #8b949e; }
+    .lang-btn.active {
+      color: #f0b429;
+      background: #f0b42915;
+      border-color: #f0b42966;
+    }
+
     /* Status bar */
     .status-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 10px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 10px; flex-wrap: wrap;
     }
     .status-dot {
       width: 8px; height: 8px; border-radius: 50%;
-      background: #3fb950;
-      display: inline-block;
+      background: #3fb950; display: inline-block;
       animation: pulse 2s infinite;
     }
     .status-dot.loading { background: #d29922; animation: none; }
     .status-dot.error   { background: #f85149; animation: none; }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.3; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .status-text { font-size: 12px; color: #8b949e; }
     .refresh-btn {
       font-size: 12px; color: #58a6ff;
@@ -69,101 +85,99 @@
       margin-bottom: 14px;
       display: flex; align-items: center; gap: 8px;
     }
-    .section-title::after { content: ''; flex: 1; height: 1px; background: #21262d; }
+    .section-title::after { content:''; flex:1; height:1px; background:#21262d; }
 
-    /* ── Skeleton loader ── */
+    /* ── Skeleton ── */
     .skeleton {
-      background: linear-gradient(90deg, #21262d 25%, #2d333b 50%, #21262d 75%);
+      background: linear-gradient(90deg,#21262d 25%,#2d333b 50%,#21262d 75%);
       background-size: 200% 100%;
       animation: shimmer 1.5s infinite;
       border-radius: 6px;
     }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
     /* ── Market Cards ── */
-    .market-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+    .market-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px; }
     .market-card {
-      background: #161b22; border: 1px solid #21262d; border-radius: 12px;
-      padding: 20px 22px; transition: border-color 0.2s;
+      background:#161b22; border:1px solid #21262d; border-radius:12px;
+      padding:20px 22px; transition:border-color 0.2s;
     }
-    .market-card:hover { border-color: #f0b42966; }
-    .market-card-label { font-size: 11px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .market-card-value { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 4px; min-height: 36px; }
-    .market-card-sub { font-size: 12px; color: #8b949e; }
+    .market-card:hover { border-color:#f0b42966; }
+    .market-card-label { font-size:11px; color:#8b949e; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+    .market-card-value { font-size:28px; font-weight:700; color:#fff; margin-bottom:4px; min-height:36px; }
+    .market-card-sub { font-size:12px; color:#8b949e; }
 
-    /* Fear colors */
-    .c-extreme-fear { color: #f85149 !important; }
-    .c-fear         { color: #f0883e !important; }
-    .c-neutral      { color: #d29922 !important; }
-    .c-greed        { color: #56d364 !important; }
-    .c-extreme-greed{ color: #3fb950 !important; }
+    .c-extreme-fear { color:#f85149!important; }
+    .c-fear         { color:#f0883e!important; }
+    .c-neutral      { color:#d29922!important; }
+    .c-greed        { color:#56d364!important; }
+    .c-extreme-greed{ color:#3fb950!important; }
 
-    /* Gauge */
-    .fear-gauge { width: 100%; height: 5px; background: linear-gradient(to right, #f85149, #f0883e, #d29922, #56d364, #3fb950); border-radius: 3px; margin-top: 10px; position: relative; }
-    .fear-gauge-dot { position: absolute; top: -5px; width: 14px; height: 14px; background: #fff; border-radius: 50%; border: 2px solid #f85149; transform: translateX(-50%); transition: left 0.8s ease; }
+    .fear-gauge { width:100%; height:5px; background:linear-gradient(to right,#f85149,#f0883e,#d29922,#56d364,#3fb950); border-radius:3px; margin-top:10px; position:relative; }
+    .fear-gauge-dot { position:absolute; top:-5px; width:14px; height:14px; background:#fff; border-radius:50%; border:2px solid #f85149; transform:translateX(-50%); transition:left 0.8s ease; }
 
-    /* Long/Short bar */
-    .ls-wrap { margin-top: 10px; }
-    .ls-bar { display: flex; height: 7px; border-radius: 4px; overflow: hidden; }
-    .ls-long  { background: #3fb950; transition: flex 0.8s ease; }
-    .ls-short { background: #f85149; transition: flex 0.8s ease; }
-    .ls-labels { display: flex; justify-content: space-between; margin-top: 5px; font-size: 11px; }
-    .ls-labels .long-label  { color: #3fb950; }
-    .ls-labels .short-label { color: #f85149; }
+    .ls-wrap { margin-top:10px; }
+    .ls-bar { display:flex; height:7px; border-radius:4px; overflow:hidden; }
+    .ls-long  { background:#3fb950; transition:flex 0.8s ease; }
+    .ls-short { background:#f85149; transition:flex 0.8s ease; }
+    .ls-labels { display:flex; justify-content:space-between; margin-top:5px; font-size:11px; }
+    .ls-labels .long-label  { color:#3fb950; }
+    .ls-labels .short-label { color:#f85149; }
 
-    /* ── News Flash ── */
-    .news-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    /* ── News ── */
+    .news-list { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
     .news-card {
-      background: #161b22; border: 1px solid #21262d; border-radius: 12px;
-      padding: 16px 20px; display: flex; gap: 14px; align-items: flex-start;
-      transition: border-color 0.2s, background 0.2s;
-      text-decoration: none; color: inherit;
+      background:#161b22; border:1px solid #21262d; border-radius:12px;
+      padding:16px 20px; display:flex; gap:14px; align-items:flex-start;
+      transition:border-color 0.2s,background 0.2s;
+      text-decoration:none; color:inherit;
     }
-    .news-card:hover { border-color: #f0b42966; background: #1c2128; }
-    .news-index { font-size: 20px; font-weight: 700; color: #f0b42933; min-width: 28px; margin-top: 2px; }
-    .news-body { flex: 1; }
-    .news-title { font-size: 14px; font-weight: 600; color: #e6edf3; margin-bottom: 5px; line-height: 1.5; }
-    .news-summary { font-size: 12px; color: #8b949e; line-height: 1.6; margin-bottom: 7px; }
-    .news-footer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .tag { font-size: 10px; color: #f0b429; background: #f0b42915; border: 1px solid #f0b42933; border-radius: 4px; padding: 2px 6px; }
-    .news-time { font-size: 10px; color: #484f58; margin-left: auto; }
-    .news-link { font-size: 10px; color: #58a6ff; text-decoration: none; }
-    .news-link:hover { text-decoration: underline; }
-
-    /* News notice */
+    .news-card:hover { border-color:#f0b42966; background:#1c2128; }
+    .news-index { font-size:20px; font-weight:700; color:#f0b42933; min-width:28px; margin-top:2px; }
+    .news-body { flex:1; }
+    .news-title { font-size:14px; font-weight:600; color:#e6edf3; margin-bottom:5px; line-height:1.5; }
+    .news-footer { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .tag { font-size:10px; color:#f0b429; background:#f0b42915; border:1px solid #f0b42933; border-radius:4px; padding:2px 6px; }
+    .news-time { font-size:10px; color:#484f58; margin-left:auto; }
+    .news-link { font-size:10px; color:#58a6ff; text-decoration:none; }
+    .news-link:hover { text-decoration:underline; }
     .news-notice {
-      font-size: 11px; color: #484f58;
-      background: #161b22; border: 1px dashed #21262d;
-      border-radius: 8px; padding: 10px 16px;
-      margin-bottom: 10px;
+      font-size:11px; color:#484f58;
+      background:#161b22; border:1px dashed #21262d;
+      border-radius:8px; padding:10px 16px; margin-bottom:10px;
+    }
+    .news-en-note {
+      font-size:11px; color:#484f58; background:#f0b42908;
+      border:1px dashed #f0b42933; border-radius:8px;
+      padding:8px 14px; margin-bottom:10px; display:none;
     }
 
     /* ── Tokens ── */
-    .tokens-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 28px; }
+    .tokens-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:28px; }
     .token-card {
-      background: #161b22; border: 1px solid #21262d; border-radius: 12px;
-      padding: 16px 14px; text-align: center; transition: border-color 0.2s;
+      background:#161b22; border:1px solid #21262d; border-radius:12px;
+      padding:16px 14px; text-align:center; transition:border-color 0.2s;
     }
-    .token-card:hover { border-color: #f0b42966; }
-    .token-badge { display: inline-block; font-size: 10px; color: #f0b429; background: #f0b42915; border: 1px solid #f0b42933; border-radius: 4px; padding: 2px 6px; margin-bottom: 8px; }
-    .token-badge.trending { color: #58a6ff; background: #58a6ff15; border-color: #58a6ff33; }
-    .token-symbol { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-    .token-name { font-size: 10px; color: #8b949e; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .token-price { font-size: 13px; color: #e6edf3; font-weight: 500; margin-bottom: 5px; min-height: 18px; }
-    .token-change { font-size: 16px; font-weight: 700; min-height: 22px; }
-    .token-change.up   { color: #3fb950; }
-    .token-change.down { color: #f85149; }
+    .token-card:hover { border-color:#f0b42966; }
+    .token-badge { display:inline-block; font-size:10px; color:#f0b429; background:#f0b42915; border:1px solid #f0b42933; border-radius:4px; padding:2px 6px; margin-bottom:8px; }
+    .token-badge.trending { color:#58a6ff; background:#58a6ff15; border-color:#58a6ff33; }
+    .token-symbol { font-size:18px; font-weight:700; color:#fff; margin-bottom:2px; }
+    .token-name { font-size:10px; color:#8b949e; margin-bottom:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .token-price { font-size:13px; color:#e6edf3; font-weight:500; margin-bottom:5px; min-height:18px; }
+    .token-change { font-size:16px; font-weight:700; min-height:22px; }
+    .token-change.up   { color:#3fb950; }
+    .token-change.down { color:#f85149; }
 
     /* ── Footer ── */
-    .footer { text-align: center; padding: 20px; border-top: 1px solid #21262d; margin-top: 8px; }
-    .footer p { font-size: 11px; color: #484f58; line-height: 1.8; }
+    .footer { text-align:center; padding:20px; border-top:1px solid #21262d; margin-top:8px; }
+    .footer p { font-size:11px; color:#484f58; line-height:1.8; }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .market-grid { grid-template-columns: 1fr; }
-      .tokens-grid { grid-template-columns: repeat(3, 1fr); }
-      .header { padding: 20px 16px 16px; }
-      .container { padding: 16px 14px 0; }
+    @media (max-width:768px) {
+      .market-grid { grid-template-columns:1fr; }
+      .tokens-grid { grid-template-columns:repeat(3,1fr); }
+      .header { padding:20px 16px 60px; }
+      .container { padding:16px 14px 0; }
+      .lang-switcher { top:auto; bottom:12px; right:50%; transform:translateX(50%); }
     }
   </style>
 </head>
@@ -172,48 +186,55 @@
 <!-- Header -->
 <div class="header">
   <div class="header-logo">AIU Daily Report · Live</div>
-  <h1>🪙 AIU<span>每日新聞</span></h1>
-  <div class="header-date" id="header-date">載入中...</div>
+  <h1>🪙 AIU <span data-i18n="title">每日新聞</span></h1>
+  <div class="header-date" id="header-date"></div>
   <div class="status-bar">
     <span><span class="status-dot" id="status-dot"></span></span>
-    <span class="status-text" id="status-text">連接數據源...</span>
-    <button class="refresh-btn" id="refresh-btn" onclick="fetchAll()">⟳ 立即刷新</button>
+    <span class="status-text" id="status-text"></span>
+    <button class="refresh-btn" id="refresh-btn" onclick="fetchAll()"></button>
     <span class="countdown" id="countdown"></span>
+  </div>
+
+  <!-- Language Switcher -->
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('zh-TW')">繁中</button>
+    <button class="lang-btn"        onclick="setLang('zh-CN')">简中</button>
+    <button class="lang-btn"        onclick="setLang('en')">EN</button>
   </div>
 </div>
 
 <div class="container">
 
   <!-- Market Overview -->
-  <div class="section-title">📊 市場概況</div>
+  <div class="section-title" data-i18n="sec_market">📊 市場概況</div>
   <div class="market-grid">
 
     <div class="market-card">
-      <div class="market-card-label">😱 恐懼&amp;貪婪指數</div>
+      <div class="market-card-label" data-i18n="fng_label">😱 恐懼&amp;貪婪指數</div>
       <div class="market-card-value" id="fng-value"><div class="skeleton" style="width:60px;height:34px;"></div></div>
-      <div class="market-card-sub" id="fng-label">載入中...</div>
+      <div class="market-card-sub" id="fng-label"></div>
       <div class="fear-gauge" id="fng-gauge-wrap" style="display:none;">
         <div class="fear-gauge-dot" id="fng-dot"></div>
       </div>
     </div>
 
     <div class="market-card">
-      <div class="market-card-label">🌐 加密總市值</div>
+      <div class="market-card-label" data-i18n="mcap_label">🌐 加密總市值</div>
       <div class="market-card-value" id="mcap-value"><div class="skeleton" style="width:80px;height:34px;"></div></div>
-      <div class="market-card-sub" id="mcap-change">載入中...</div>
+      <div class="market-card-sub" id="mcap-change"></div>
     </div>
 
     <div class="market-card">
-      <div class="market-card-label">⚖️ BTC 多空比（Binance）</div>
-      <div class="market-card-value" id="ls-value" style="font-size:15px; color:#8b949e; margin-top:6px;">載入中...</div>
+      <div class="market-card-label" data-i18n="ls_label">⚖️ BTC 多空比（Binance）</div>
+      <div class="market-card-value" id="ls-value" style="font-size:15px;color:#8b949e;margin-top:6px;"></div>
       <div class="ls-wrap" id="ls-wrap" style="display:none;">
         <div class="ls-bar">
           <div class="ls-long"  id="ls-long-bar"></div>
           <div class="ls-short" id="ls-short-bar"></div>
         </div>
         <div class="ls-labels">
-          <span class="long-label"  id="ls-long-pct">多方</span>
-          <span class="short-label" id="ls-short-pct">空方</span>
+          <span class="long-label"  id="ls-long-pct"></span>
+          <span class="short-label" id="ls-short-pct"></span>
         </div>
       </div>
     </div>
@@ -221,18 +242,17 @@
   </div>
 
   <!-- News Flash -->
-  <div class="section-title">📰 今日新聞快訊</div>
-  <div class="news-notice">💡 新聞數據每次開啟頁面時顯示最新抓取內容。如需更新請點選右上角「立即刷新」，或直接前往原文來源。</div>
+  <div class="section-title" data-i18n="sec_news">📰 今日新聞快訊</div>
+  <div class="news-notice" data-i18n="news_notice">💡 新聞數據每次開啟頁面時顯示最新抓取內容。如需更新請點選「立即刷新」，或直接前往原文來源。</div>
+  <div class="news-en-note" id="news-en-note">📌 News content is sourced from Chinese crypto media. Titles are displayed in their original language.</div>
   <div class="news-list" id="news-list">
-    <!-- 靜態新聞（由 Claude 最後一次抓取） -->
     <a class="news-card" href="https://www.theblockbeats.info/newsflash" target="_blank">
       <div class="news-index">01</div>
       <div class="news-body">
         <div class="news-title">🔐 量子計算威脅加密安全：約 690 萬枚休眠比特幣面臨風險</div>
-        <div class="news-summary">研究指出，僅需約 1 萬個量子比特即可在密碼學規模上運行 Shor 算法，突破比特幣橢圓曲線加密。市場對量子抗性方案需求急升，QRL 等項目受到廣泛關注。</div>
         <div class="news-footer">
           <span class="tag">#量子計算</span><span class="tag">#安全威脅</span><span class="tag">#BTC</span>
-          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank">查看原文 →</a>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
           <span class="news-time">2026-03-31 15:56</span>
         </div>
       </div>
@@ -241,10 +261,9 @@
       <div class="news-index">02</div>
       <div class="news-body">
         <div class="news-title">🐋 巨鯨從 Binance 提走 1,000 枚 BTC，價值約 6,725 萬美元</div>
-        <div class="news-summary">鏈上偵探監測到某新建錢包從 Binance 大規模提幣，金額達 6,725 萬美元，為近期少見的大額提幣動作。市場解讀為機構或大戶轉移至冷錢包，看漲信號。</div>
         <div class="news-footer">
           <span class="tag">#巨鯨</span><span class="tag">#鏈上動態</span><span class="tag">#BTC</span>
-          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank">查看原文 →</a>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
           <span class="news-time">2026-03-31 16:38</span>
         </div>
       </div>
@@ -253,10 +272,9 @@
       <div class="news-index">03</div>
       <div class="news-body">
         <div class="news-title">🏦 Keyrock 完成 C 輪融資，渣打銀行領投，估值達 11 億美元</div>
-        <div class="news-summary">數字資產流動性服務商 Keyrock 獲渣打銀行旗下 SC Ventures 領投，成功躋身獨角獸行列。傳統金融巨頭持續加碼 crypto 基礎設施，機構資金入場趨勢明確。</div>
         <div class="news-footer">
           <span class="tag">#融資</span><span class="tag">#機構資金</span><span class="tag">#獨角獸</span>
-          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank">查看原文 →</a>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
           <span class="news-time">2026-03-31 16:35</span>
         </div>
       </div>
@@ -265,10 +283,9 @@
       <div class="news-index">04</div>
       <div class="news-body">
         <div class="news-title">💳 KB Card × Avalanche 合作推出「混合型穩定幣」信用卡支付</div>
-        <div class="news-summary">韓國最大信用卡公司 KB Card 與 Avalanche 達成合作，推出結合鏈上穩定幣與傳統信用卡的混合支付模式，為亞洲 Web3 支付落地提供新範例。</div>
         <div class="news-footer">
           <span class="tag">#穩定幣</span><span class="tag">#支付</span><span class="tag">#Avalanche</span>
-          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank">查看原文 →</a>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
           <span class="news-time">2026-03-31 16:51</span>
         </div>
       </div>
@@ -277,10 +294,9 @@
       <div class="news-index">05</div>
       <div class="news-body">
         <div class="news-title">📉 ETH 回調中巨鯨加倉：650 萬美元規模多單，均價 $2,043</div>
-        <div class="news-summary">在以太坊近期價格回調過程中，有巨鯨於 $2,043 附近大舉建立多單倉位，合約規模達 650 萬美元。顯示部分大戶逢低佈局，短期底部支撐信號值得關注。</div>
         <div class="news-footer">
           <span class="tag">#ETH</span><span class="tag">#巨鯨做多</span><span class="tag">#合約動態</span>
-          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank">查看原文 →</a>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
           <span class="news-time">2026-03-31 15:41</span>
         </div>
       </div>
@@ -288,9 +304,8 @@
   </div>
 
   <!-- Top Tokens -->
-  <div class="section-title">🔥 熱門代幣漲跌（24h · 即時）</div>
+  <div class="section-title" data-i18n="sec_tokens">🔥 熱門代幣漲跌（24h · 即時）</div>
   <div class="tokens-grid" id="tokens-grid">
-    <!-- filled by JS -->
     <div class="token-card"><div class="skeleton" style="height:120px;"></div></div>
     <div class="token-card"><div class="skeleton" style="height:120px;"></div></div>
     <div class="token-card"><div class="skeleton" style="height:120px;"></div></div>
@@ -302,209 +317,322 @@
 
 <!-- Footer -->
 <div class="footer">
-  <p>⚠️ 本報告僅供參考，不構成任何投資建議。加密貨幣市場風險極高，請謹慎評估。</p>
-  <p style="margin-top:4px; color:#6e7681;">即時數據：CoinGecko API · alternative.me API　|　新聞來源：BlockBeats　|　AIU Daily © 2026</p>
+  <p data-i18n="disclaimer">⚠️ 本報告僅供參考，不構成任何投資建議。加密貨幣市場風險極高，請謹慎評估。</p>
+  <p style="margin-top:4px;color:#6e7681;" data-i18n="sources">即時數據：CoinGecko API · alternative.me API　|　新聞來源：BlockBeats　|　AIU Daily © 2026</p>
 </div>
 
 <script>
-  // ── Helpers ──────────────────────────────────────────────
-  const $ = id => document.getElementById(id);
-
-  function formatPrice(n) {
-    if (n >= 1000) return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
-    if (n >= 1)    return '$' + n.toFixed(2);
-    if (n >= 0.01) return '$' + n.toFixed(4);
-    return '$' + n.toFixed(6);
+// ── i18n ─────────────────────────────────────────────────────
+const LANGS = {
+  'zh-TW': {
+    title:       '每日新聞',
+    sec_market:  '📊 市場概況',
+    sec_news:    '📰 今日新聞快訊',
+    sec_tokens:  '🔥 熱門代幣漲跌（24h · 即時）',
+    fng_label:   '😱 恐懼&貪婪指數',
+    mcap_label:  '🌐 加密總市值',
+    ls_label:    '⚖️ BTC 多空比（Binance）',
+    news_notice: '💡 新聞數據每次開啟頁面時顯示最新抓取內容。如需更新請點選「立即刷新」，或直接前往原文來源。',
+    read_more:   '查看原文 →',
+    refresh:     '⟳ 立即刷新',
+    refreshing:  '⟳ 刷新中...',
+    connecting:  '連接數據源...',
+    updating:    '正在更新數據...',
+    updated:     '數據已更新',
+    partial_fail:'部分數據更新失敗',
+    all_fail:    '數據更新失敗',
+    auto_refresh:'{m}:{s} 後自動刷新',
+    long:        '多方',
+    short:       '空方',
+    badge_fixed: '固定',
+    badge_trend: '熱門',
+    fng_states:  ['極度恐懼','恐懼','中性','貪婪','極度貪婪'],
+    coin_names:  { bitcoin:'比特幣', ethereum:'以太坊', solana:'Solana' },
+    disclaimer:  '⚠️ 本報告僅供參考，不構成任何投資建議。加密貨幣市場風險極高，請謹慎評估。',
+    sources:     '即時數據：CoinGecko API · alternative.me API　|　新聞來源：BlockBeats　|　AIU Daily © 2026',
+    date_fmt:    (y,m,d,wd) => `${y}年${m}月${d}日 星期${'日一二三四五六'[wd]}`,
+  },
+  'zh-CN': {
+    title:       '每日新闻',
+    sec_market:  '📊 市场概况',
+    sec_news:    '📰 今日新闻快讯',
+    sec_tokens:  '🔥 热门代币涨跌（24h · 实时）',
+    fng_label:   '😱 恐惧&贪婪指数',
+    mcap_label:  '🌐 加密总市值',
+    ls_label:    '⚖️ BTC 多空比（Binance）',
+    news_notice: '💡 新闻数据每次开启页面时显示最新抓取内容。如需更新请点击「立即刷新」，或直接前往原文来源。',
+    read_more:   '查看原文 →',
+    refresh:     '⟳ 立即刷新',
+    refreshing:  '⟳ 刷新中...',
+    connecting:  '连接数据源...',
+    updating:    '正在更新数据...',
+    updated:     '数据已更新',
+    partial_fail:'部分数据更新失败',
+    all_fail:    '数据更新失败',
+    auto_refresh:'{m}:{s} 后自动刷新',
+    long:        '多方',
+    short:       '空方',
+    badge_fixed: '固定',
+    badge_trend: '热门',
+    fng_states:  ['极度恐惧','恐惧','中性','贪婪','极度贪婪'],
+    coin_names:  { bitcoin:'比特币', ethereum:'以太坊', solana:'Solana' },
+    disclaimer:  '⚠️ 本报告仅供参考，不构成任何投资建议。加密货币市场风险极高，请谨慎评估。',
+    sources:     '实时数据：CoinGecko API · alternative.me API　|　新闻来源：BlockBeats　|　AIU Daily © 2026',
+    date_fmt:    (y,m,d,wd) => `${y}年${m}月${d}日 星期${'日一二三四五六'[wd]}`,
+  },
+  'en': {
+    title:       'Daily News',
+    sec_market:  '📊 Market Overview',
+    sec_news:    '📰 News Flash',
+    sec_tokens:  '🔥 Top Tokens (24h · Live)',
+    fng_label:   '😱 Fear & Greed Index',
+    mcap_label:  '🌐 Total Market Cap',
+    ls_label:    '⚖️ BTC L/S Ratio (Binance)',
+    news_notice: '💡 News is updated daily at 09:00 (UTC+8). Token prices refresh every 5 minutes.',
+    read_more:   'Read more →',
+    refresh:     '⟳ Refresh',
+    refreshing:  '⟳ Refreshing...',
+    connecting:  'Connecting...',
+    updating:    'Updating data...',
+    updated:     'Updated',
+    partial_fail:'Some data failed to load',
+    all_fail:    'Data update failed',
+    auto_refresh:'Auto refresh in {m}:{s}',
+    long:        'Long',
+    short:       'Short',
+    badge_fixed: 'Fixed',
+    badge_trend: 'Trending',
+    fng_states:  ['Extreme Fear','Fear','Neutral','Greed','Extreme Greed'],
+    coin_names:  { bitcoin:'Bitcoin', ethereum:'Ethereum', solana:'Solana' },
+    disclaimer:  '⚠️ This report is for informational purposes only and does not constitute investment advice.',
+    sources:     'Live data: CoinGecko API · alternative.me API  |  News: BlockBeats  |  AIU Daily © 2026',
+    date_fmt:    (y,m,d,wd) => new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),
   }
+};
 
-  function formatCap(n) {
-    if (n >= 1e12) return '$' + (n / 1e12).toFixed(2) + 'T';
-    if (n >= 1e9)  return '$' + (n / 1e9).toFixed(1) + 'B';
-    return '$' + n.toLocaleString();
-  }
+let currentLang = localStorage.getItem('aiu-lang') || 'zh-TW';
+const T = () => LANGS[currentLang];
+const $ = id => document.getElementById(id);
 
-  function fngClass(v) {
-    if (v <= 24) return 'c-extreme-fear';
-    if (v <= 44) return 'c-fear';
-    if (v <= 55) return 'c-neutral';
-    if (v <= 75) return 'c-greed';
-    return 'c-extreme-greed';
-  }
+// ── Apply language ────────────────────────────────────────────
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('aiu-lang', lang);
+  document.documentElement.lang = lang;
 
-  function fngLabel(v) {
-    if (v <= 24) return '極度恐懼';
-    if (v <= 44) return '恐懼';
-    if (v <= 55) return '中性';
-    if (v <= 75) return '貪婪';
-    return '極度貪婪';
-  }
+  // Update active button
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === {
+      'zh-TW':'繁中','zh-CN':'简中','en':'EN'
+    }[lang]);
+  });
 
-  function setStatus(state, text) {
-    const dot = $('status-dot');
-    dot.className = 'status-dot' + (state === 'ok' ? '' : ' ' + state);
-    $('status-text').textContent = text;
-  }
-
-  // ── Date Header ──────────────────────────────────────────
-  function updateDateHeader() {
-    const now = new Date();
-    const days = ['日','一','二','三','四','五','六'];
-    const y = now.getFullYear(), m = now.getMonth()+1, d = now.getDate();
-    $('header-date').textContent =
-      `${y}年${m}月${d}日 星期${days[now.getDay()]}`;
-  }
-
-  // ── Fetch Fear & Greed ────────────────────────────────────
-  async function fetchFNG() {
-    const res = await fetch('https://api.alternative.me/fng/?limit=1');
-    const json = await res.json();
-    const v = parseInt(json.data[0].value);
-    const cls = fngClass(v);
-    const lbl = fngLabel(v);
-
-    $('fng-value').innerHTML = `<span class="${cls}">${v}</span>`;
-    $('fng-label').innerHTML = `<span class="${cls}" style="font-weight:600;">${lbl}</span>`;
-
-    // Gauge dot position
-    const pct = v; // 0-100 maps to 0%-100%
-    $('fng-gauge-wrap').style.display = 'block';
-    $('fng-dot').style.left = pct + '%';
-    $('fng-dot').style.borderColor = getComputedStyle(document.documentElement)
-      .getPropertyValue('--c') || (v <= 24 ? '#f85149' : v <= 55 ? '#d29922' : '#3fb950');
-  }
-
-  // ── Fetch Global Market Cap ───────────────────────────────
-  async function fetchGlobal() {
-    const res = await fetch('https://api.coingecko.com/api/v3/global');
-    const json = await res.json();
-    const cap = json.data.total_market_cap.usd;
-    const chg = json.data.market_cap_change_percentage_24h_usd;
-    $('mcap-value').textContent = formatCap(cap);
-    const sign = chg >= 0 ? '▲ +' : '▼ ';
-    const color = chg >= 0 ? '#3fb950' : '#f85149';
-    $('mcap-change').innerHTML = `<span style="color:${color}">24h ${sign}${Math.abs(chg).toFixed(2)}%</span>`;
-  }
-
-  // ── Fetch Token Prices ────────────────────────────────────
-  async function fetchTokens() {
-    // Fixed: BTC, ETH, SOL
-    const fixedRes = await fetch(
-      'https://api.coingecko.com/api/v3/coins/markets' +
-      '?vs_currency=usd&ids=bitcoin,ethereum,solana' +
-      '&order=market_cap_desc&per_page=3&sparkline=false'
-    );
-    const fixed = await fixedRes.json();
-
-    // Trending top 2
-    const trendRes = await fetch('https://api.coingecko.com/api/v3/search/trending');
-    const trendJson = await trendRes.json();
-    const trendIds = trendJson.coins.slice(0, 2).map(c => c.item.id).join(',');
-
-    const trendPriceRes = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets` +
-      `?vs_currency=usd&ids=${trendIds}&per_page=2&sparkline=false`
-    );
-    const trending = await trendPriceRes.json();
-
-    const all = [
-      ...fixed.map(c => ({ ...c, type: '固定' })),
-      ...trending.map(c => ({ ...c, type: '熱門' }))
-    ];
-
-    const nameMap = {
-      bitcoin: '比特幣', ethereum: '以太坊', solana: 'Solana'
-    };
-
-    $('tokens-grid').innerHTML = all.map(coin => {
-      const chg  = coin.price_change_percentage_24h;
-      const up   = chg >= 0;
-      const sign = up ? '▲ +' : '▼ ';
-      const cls  = up ? 'up' : 'down';
-      const badgeCls = coin.type === '熱門' ? 'token-badge trending' : 'token-badge';
-      const displayName = nameMap[coin.id] || coin.name;
-      return `
-        <div class="token-card">
-          <div class="${badgeCls}">${coin.type}</div>
-          <div class="token-symbol">${coin.symbol.toUpperCase()}</div>
-          <div class="token-name">${displayName}</div>
-          <div class="token-price">${formatPrice(coin.current_price)}</div>
-          <div class="token-change ${cls}">${sign}${Math.abs(chg).toFixed(2)}%</div>
-        </div>`;
-    }).join('');
-  }
-
-  // ── Fetch Long/Short Ratio (Binance Futures API) ─────────
-  async function fetchLS() {
-    const res = await fetch(
-      'https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=BTCUSDT&period=5m&limit=1'
-    );
-    const json = await res.json();
-    const d = json[0];
-    const longPct  = (parseFloat(d.longAccount)  * 100).toFixed(1);
-    const shortPct = (parseFloat(d.shortAccount) * 100).toFixed(1);
-    const ratio    = parseFloat(d.longShortRatio).toFixed(2);
-
-    $('ls-value').innerHTML =
-      `<span style="color:#3fb950;font-size:22px;font-weight:700;">${longPct}%</span>` +
-      `<span style="color:#484f58;font-size:14px;"> / </span>` +
-      `<span style="color:#f85149;font-size:22px;font-weight:700;">${shortPct}%</span>`;
-
-    $('ls-wrap').style.display = 'block';
-    $('ls-long-bar').style.flex  = longPct;
-    $('ls-short-bar').style.flex = shortPct;
-    $('ls-long-pct').textContent  = `多方 ${longPct}%`;
-    $('ls-short-pct').textContent = `空方 ${shortPct}%`;
-  }
-
-  // ── Countdown Timer ───────────────────────────────────────
-  let countdownSec = 300;
-  let countdownTimer = null;
-
-  function startCountdown() {
-    countdownSec = 300;
-    if (countdownTimer) clearInterval(countdownTimer);
-    countdownTimer = setInterval(() => {
-      countdownSec--;
-      const m = Math.floor(countdownSec / 60);
-      const s = countdownSec % 60;
-      $('countdown').textContent = `${m}:${s.toString().padStart(2,'0')} 後自動刷新`;
-      if (countdownSec <= 0) fetchAll();
-    }, 1000);
-  }
-
-  // ── Main Fetch ────────────────────────────────────────────
-  async function fetchAll() {
-    const btn = $('refresh-btn');
-    btn.disabled = true;
-    btn.textContent = '⟳ 刷新中...';
-    setStatus('loading', '正在更新數據...');
-    updateDateHeader();
-
-    const results = await Promise.allSettled([
-      fetchFNG(),
-      fetchGlobal(),
-      fetchTokens(),
-      fetchLS()
-    ]);
-
-    const failed = results.filter(r => r.status === 'rejected').length;
-    const now = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-    if (failed === 0) {
-      setStatus('ok', `數據已更新 · ${now}`);
-    } else if (failed < 3) {
-      setStatus('loading', `部分數據更新失敗（${failed}/3）· ${now}`);
-    } else {
-      setStatus('error', `數據更新失敗 · ${now}`);
+  // Update static data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (T()[key] !== undefined && typeof T()[key] === 'string') {
+      el.innerHTML = T()[key];
     }
+  });
 
-    btn.disabled = false;
-    btn.textContent = '⟳ 立即刷新';
-    startCountdown();
-  }
+  // English note for news
+  $('news-en-note').style.display = lang === 'en' ? 'block' : 'none';
 
-  // ── Init ─────────────────────────────────────────────────
-  fetchAll();
+  // Refresh dynamic text
+  updateDateHeader();
+  $('refresh-btn').textContent = T().refresh;
+  const statusText = $('status-text').textContent;
+  if (statusText) $('status-text').textContent = T().connecting;
+
+  // Re-render tokens if already loaded (to update badge/name language)
+  if (window._lastTokenData) renderTokens(window._lastTokenData);
+  // Re-render fng if loaded
+  if (window._lastFngValue !== undefined) renderFng(window._lastFngValue);
+  // Re-render ls if loaded
+  if (window._lastLS) renderLS(window._lastLS.longPct, window._lastLS.shortPct);
+}
+
+function setLang(lang) { applyLang(lang); }
+
+// ── Helpers ───────────────────────────────────────────────────
+function formatPrice(n) {
+  if (n >= 1000) return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  if (n >= 1)    return '$' + n.toFixed(2);
+  if (n >= 0.01) return '$' + n.toFixed(4);
+  return '$' + n.toFixed(6);
+}
+function formatCap(n) {
+  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
+  if (n >= 1e9)  return '$' + (n/1e9).toFixed(1) + 'B';
+  return '$' + n.toLocaleString();
+}
+function fngStateLabel(v) {
+  const states = T().fng_states;
+  if (v <= 24) return states[0];
+  if (v <= 44) return states[1];
+  if (v <= 55) return states[2];
+  if (v <= 75) return states[3];
+  return states[4];
+}
+function fngClass(v) {
+  if (v <= 24) return 'c-extreme-fear';
+  if (v <= 44) return 'c-fear';
+  if (v <= 55) return 'c-neutral';
+  if (v <= 75) return 'c-greed';
+  return 'c-extreme-greed';
+}
+function setStatus(state, text) {
+  $('status-dot').className = 'status-dot' + (state === 'ok' ? '' : ' ' + state);
+  $('status-text').textContent = text;
+}
+
+// ── Date Header ───────────────────────────────────────────────
+function updateDateHeader() {
+  const now = new Date();
+  $('header-date').textContent = T().date_fmt(
+    now.getFullYear(), now.getMonth()+1, now.getDate(), now.getDay()
+  );
+}
+
+// ── Render helpers ────────────────────────────────────────────
+function renderFng(v) {
+  window._lastFngValue = v;
+  const cls = fngClass(v);
+  $('fng-value').innerHTML = `<span class="${cls}">${v}</span>`;
+  $('fng-label').innerHTML = `<span class="${cls}" style="font-weight:600;">${fngStateLabel(v)}</span>`;
+  $('fng-gauge-wrap').style.display = 'block';
+  $('fng-dot').style.left = v + '%';
+}
+
+function renderLS(longPct, shortPct) {
+  window._lastLS = { longPct, shortPct };
+  $('ls-value').innerHTML =
+    `<span style="color:#3fb950;font-size:22px;font-weight:700;">${longPct}%</span>` +
+    `<span style="color:#484f58;font-size:14px;"> / </span>` +
+    `<span style="color:#f85149;font-size:22px;font-weight:700;">${shortPct}%</span>`;
+  $('ls-wrap').style.display = 'block';
+  $('ls-long-bar').style.flex  = longPct;
+  $('ls-short-bar').style.flex = shortPct;
+  $('ls-long-pct').textContent  = `${T().long} ${longPct}%`;
+  $('ls-short-pct').textContent = `${T().short} ${shortPct}%`;
+}
+
+function renderTokens(allCoins) {
+  window._lastTokenData = allCoins;
+  $('tokens-grid').innerHTML = allCoins.map(coin => {
+    const chg = coin.price_change_percentage_24h;
+    const up  = chg >= 0;
+    const cls = up ? 'up' : 'down';
+    const sign = up ? '▲ +' : '▼ ';
+    const badgeCls = coin.type === 'trending' ? 'token-badge trending' : 'token-badge';
+    const badge = coin.type === 'trending' ? T().badge_trend : T().badge_fixed;
+    const name  = T().coin_names[coin.id] || coin.name;
+    return `
+      <div class="token-card">
+        <div class="${badgeCls}">${badge}</div>
+        <div class="token-symbol">${coin.symbol.toUpperCase()}</div>
+        <div class="token-name">${name}</div>
+        <div class="token-price">${formatPrice(coin.current_price)}</div>
+        <div class="token-change ${cls}">${sign}${Math.abs(chg).toFixed(2)}%</div>
+      </div>`;
+  }).join('');
+}
+
+// ── API Fetches ───────────────────────────────────────────────
+async function fetchFNG() {
+  const res  = await fetch('https://api.alternative.me/fng/?limit=1');
+  const json = await res.json();
+  renderFng(parseInt(json.data[0].value));
+}
+
+async function fetchGlobal() {
+  const res  = await fetch('https://api.coingecko.com/api/v3/global');
+  const json = await res.json();
+  const cap  = json.data.total_market_cap.usd;
+  const chg  = json.data.market_cap_change_percentage_24h_usd;
+  $('mcap-value').textContent = formatCap(cap);
+  const sign  = chg >= 0 ? '▲ +' : '▼ ';
+  const color = chg >= 0 ? '#3fb950' : '#f85149';
+  $('mcap-change').innerHTML = `<span style="color:${color}">24h ${sign}${Math.abs(chg).toFixed(2)}%</span>`;
+}
+
+async function fetchTokens() {
+  const fixedRes = await fetch(
+    'https://api.coingecko.com/api/v3/coins/markets' +
+    '?vs_currency=usd&ids=bitcoin,ethereum,solana&order=market_cap_desc&per_page=3&sparkline=false'
+  );
+  const fixed = await fixedRes.json();
+
+  const trendRes  = await fetch('https://api.coingecko.com/api/v3/search/trending');
+  const trendJson = await trendRes.json();
+  const trendIds  = trendJson.coins.slice(0,2).map(c => c.item.id).join(',');
+
+  const trendPriceRes = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${trendIds}&per_page=2&sparkline=false`
+  );
+  const trending = await trendPriceRes.json();
+
+  const all = [
+    ...fixed.map(c   => ({ ...c, type: 'fixed' })),
+    ...trending.map(c => ({ ...c, type: 'trending' }))
+  ];
+  renderTokens(all);
+}
+
+async function fetchLS() {
+  const res  = await fetch(
+    'https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=BTCUSDT&period=5m&limit=1'
+  );
+  const json = await res.json();
+  const d    = json[0];
+  const longPct  = (parseFloat(d.longAccount)  * 100).toFixed(1);
+  const shortPct = (parseFloat(d.shortAccount) * 100).toFixed(1);
+  renderLS(longPct, shortPct);
+}
+
+// ── Countdown ─────────────────────────────────────────────────
+let countdownSec = 300, countdownTimer = null;
+function startCountdown() {
+  countdownSec = 300;
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    countdownSec--;
+    const m = Math.floor(countdownSec / 60);
+    const s = countdownSec % 60;
+    $('countdown').textContent = T().auto_refresh
+      .replace('{m}', m).replace('{s}', s.toString().padStart(2,'0'));
+    if (countdownSec <= 0) fetchAll();
+  }, 1000);
+}
+
+// ── Main Fetch ────────────────────────────────────────────────
+async function fetchAll() {
+  const btn = $('refresh-btn');
+  btn.disabled = true;
+  btn.textContent = T().refreshing;
+  setStatus('loading', T().updating);
+  updateDateHeader();
+
+  const results = await Promise.allSettled([
+    fetchFNG(), fetchGlobal(), fetchTokens(), fetchLS()
+  ]);
+
+  const failed = results.filter(r => r.status === 'rejected').length;
+  const now = new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+
+  if (failed === 0)      setStatus('ok',      `${T().updated} · ${now}`);
+  else if (failed < 4)   setStatus('loading', `${T().partial_fail} · ${now}`);
+  else                   setStatus('error',   `${T().all_fail} · ${now}`);
+
+  btn.disabled = false;
+  btn.textContent = T().refresh;
+  startCountdown();
+}
+
+// ── Init ──────────────────────────────────────────────────────
+applyLang(currentLang);
+setStatus('loading', T().connecting);
+fetchAll();
 </script>
 </body>
 </html>
