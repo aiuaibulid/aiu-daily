@@ -335,8 +335,9 @@ const LANGS = {
     mcap_label:  '🌐 加密總市值',
     ls_label:    '⚖️ BTC 多空比（Binance）',
     news_notice: '💡 點選「立即刷新」即時抓取 CoinDesk · CoinTelegraph · Decrypt 最新快訊。中文新聞每日早上 9:00 自動更新。',
-    news_loading:'⏳ 正在抓取最新新聞...',
-    news_fail:   '⚠️ 新聞抓取失敗，請稍後再試。',
+    news_loading:     '⏳ 正在抓取最新新聞...',
+    news_translating: '🌐 正在翻譯成繁體中文...',
+    news_fail:        '⚠️ 新聞抓取失敗，請稍後再試。',
     read_more:   '查看原文 →',
     refresh:     '⟳ 立即刷新',
     refreshing:  '⟳ 刷新中...',
@@ -365,8 +366,9 @@ const LANGS = {
     mcap_label:  '🌐 加密总市值',
     ls_label:    '⚖️ BTC 多空比（Binance）',
     news_notice: '💡 点击「立即刷新」即时抓取 CoinDesk · CoinTelegraph · Decrypt 最新快讯。中文新闻每日早上 9:00 自动更新。',
-    news_loading:'⏳ 正在抓取最新新闻...',
-    news_fail:   '⚠️ 新闻抓取失败，请稍后再试。',
+    news_loading:     '⏳ 正在抓取最新新闻...',
+    news_translating: '🌐 正在翻译成简体中文...',
+    news_fail:        '⚠️ 新闻抓取失败，请稍后再试。',
     read_more:   '查看原文 →',
     refresh:     '⟳ 立即刷新',
     refreshing:  '⟳ 刷新中...',
@@ -395,8 +397,9 @@ const LANGS = {
     mcap_label:  '🌐 Total Market Cap',
     ls_label:    '⚖️ BTC L/S Ratio (Binance)',
     news_notice: '💡 Click "Refresh" to fetch live news from CoinDesk · CoinTelegraph · Decrypt. Chinese news auto-updates daily at 09:00 (UTC+8).',
-    news_loading:'⏳ Fetching latest news...',
-    news_fail:   '⚠️ News fetch failed, please try again later.',
+    news_loading:     '⏳ Fetching latest news...',
+    news_translating: '🌐 Displaying in English...',
+    news_fail:        '⚠️ News fetch failed, please try again later.',
     read_more:   'Read more →',
     refresh:     '⟳ Refresh',
     refreshing:  '⟳ Refreshing...',
@@ -452,12 +455,12 @@ function applyLang(lang) {
   const statusText = $('status-text').textContent;
   if (statusText) $('status-text').textContent = T().connecting;
 
-  // Re-render tokens if already loaded (to update badge/name language)
-  if (window._lastTokenData) renderTokens(window._lastTokenData);
-  // Re-render fng if loaded
+  // 重新渲染已載入的動態數據
+  if (window._lastTokenData)              renderTokens(window._lastTokenData);
   if (window._lastFngValue !== undefined) renderFng(window._lastFngValue);
-  // Re-render ls if loaded
-  if (window._lastLS) renderLS(window._lastLS.longPct, window._lastLS.shortPct);
+  if (window._lastLS)                     renderLS(window._lastLS.longPct, window._lastLS.shortPct);
+  // 語言切換時重新翻譯新聞（若有英文原文）
+  if (window._rawEnglishNews)             translateAndRender(window._rawEnglishNews, lang);
 }
 
 function setLang(lang) { applyLang(lang); }
@@ -606,39 +609,60 @@ const NEWS_SOURCES = [
   { rss: 'https://decrypt.co/feed',                         name: 'Decrypt' },
 ];
 
-// ── News Keywords ─────────────────────────────────────────────
+// ── News Keywords (EN + ZH) ───────────────────────────────────
 const NEWS_KEYWORDS = {
-  "ETF":"#ETF","美聯儲":"#美聯儲","美联储":"#美联储","通脹":"#宏觀","通胀":"#宏观",
-  "監管":"#監管","监管":"#监管","巨鯨":"#巨鯨","巨鲸":"#巨鲸","機構":"#機構","机构":"#机构",
-  "比特幣":"#BTC","比特币":"#BTC","BTC":"#BTC","以太坊":"#ETH","ETH":"#ETH",
-  "Solana":"#SOL","SOL":"#SOL","穩定幣":"#穩定幣","稳定币":"#稳定币",
-  "融資":"#融資","融资":"#融资","量子":"#量子","SEC":"#SEC","Fed":"#Fed",
+  "ETF":"#ETF","SEC":"#SEC","Fed":"#Fed","Federal Reserve":"#Fed",
+  "regulation":"#監管","regulatory":"#監管","ban":"#監管",
+  "whale":"#巨鯨","institution":"#機構","institutional":"#機構",
+  "Bitcoin":"#BTC","BTC":"#BTC","Ethereum":"#ETH","ETH":"#ETH",
+  "Solana":"#SOL","SOL":"#SOL","stablecoin":"#穩定幣",
+  "funding":"#融資","raises":"#融資","quantum":"#量子",
+  "inflation":"#宏觀","macro":"#宏觀","tariff":"#宏觀",
+  "比特幣":"#BTC","比特币":"#BTC","以太坊":"#ETH",
+  "巨鯨":"#巨鯨","巨鲸":"#巨鲸","機構":"#機構","机构":"#机构",
+  "監管":"#監管","监管":"#监管","穩定幣":"#穩定幣","稳定币":"#稳定币",
 };
 function extractTags(title) {
   const tags = [];
   for (const [kw, tag] of Object.entries(NEWS_KEYWORDS)) {
-    if (title.includes(kw) && !tags.includes(tag)) tags.push(tag);
+    if (title.toLowerCase().includes(kw.toLowerCase()) && !tags.includes(tag)) tags.push(tag);
     if (tags.length >= 3) break;
   }
   return tags;
 }
 
+// ── Google Translate ──────────────────────────────────────────
+// 使用 Google Translate 公開端點（免費，無需 API key）
+const GT_LANG = { 'zh-TW': 'zh-TW', 'zh-CN': 'zh-CN', 'en': 'en' };
+
+async function translateBatch(titles, targetLang) {
+  if (targetLang === 'en') return titles; // 英文原文，直接返回
+  const tl = GT_LANG[targetLang] || 'zh-TW';
+  // 用唯一分隔符號合併，一次 API 請求翻譯所有標題
+  const SEP = ' ⸻ ';
+  const combined = titles.join(SEP);
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${encodeURIComponent(tl)}&dt=t&q=${encodeURIComponent(combined)}`;
+  const res  = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  const data = await res.json();
+  const translated = data[0].map(chunk => chunk[0]).join('');
+  // 按分隔符切回各標題，修剪空白
+  return translated.split(SEP).map(s => s.trim());
+}
+
 // ── Render News Cards ─────────────────────────────────────────
 function renderNewsCards(items) {
-  if (!items || !items.length) return;
-  window._lastNewsItems = items;
+  if (!items?.length) return;
   const now = new Date().toISOString().slice(0,10);
   $('news-list').innerHTML =
     '<!-- NEWS_START -->\n' +
     items.slice(0,5).map((item, i) => {
-      const tags = extractTags(item.title)
-        .map(t => `<span class="tag">${t}</span>`).join('');
-      const safeTitle = item.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-      const safeUrl   = item.url.replace(/"/g,'%22');
+      const tags    = extractTags(item.title).map(t => `<span class="tag">${t}</span>`).join('');
+      const safe    = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const safeUrl = item.url.replace(/"/g,'%22');
       return `    <a class="news-card" href="${safeUrl}" target="_blank">
       <div class="news-index">${String(i+1).padStart(2,'0')}</div>
       <div class="news-body">
-        <div class="news-title">${safeTitle}</div>
+        <div class="news-title">${safe(item.title)}</div>
         <div class="news-footer">
           ${tags}
           <a class="news-link" href="${safeUrl}" target="_blank" data-i18n="read_more">${T().read_more}</a>
@@ -650,9 +674,38 @@ function renderNewsCards(items) {
     '\n    <!-- NEWS_END -->';
 }
 
+// ── Translate + Render ────────────────────────────────────────
+async function translateAndRender(rawItems, lang) {
+  if (!rawItems?.length) return;
+  if (lang === 'en') {
+    renderNewsCards(rawItems);
+    return;
+  }
+  // 顯示翻譯中提示
+  const indicator = document.createElement('div');
+  indicator.style.cssText = 'padding:8px 16px;color:#f0b429;font-size:11px;';
+  indicator.textContent = T().news_translating;
+  $('news-list').prepend(indicator);
+
+  try {
+    const titles     = rawItems.slice(0,5).map(i => i.title);
+    const translated = await translateBatch(titles, lang);
+    indicator.remove();
+    const translatedItems = rawItems.slice(0,5).map((item, idx) => ({
+      ...item,
+      title: translated[idx] || item.title, // 翻譯失敗時回退原文
+    }));
+    renderNewsCards(translatedItems);
+  } catch (e) {
+    indicator.remove();
+    console.warn('翻譯失敗，顯示英文原文:', e.message);
+    renderNewsCards(rawItems); // 翻譯失敗，顯示英文原文
+  }
+}
+
 // ── Fetch News (via rss2json) ─────────────────────────────────
 async function fetchNews() {
-  // 顯示載入骨架
+  // 顯示骨架載入
   $('news-list').innerHTML =
     '<!-- NEWS_START -->\n' +
     `<div style="padding:12px 16px;color:#8b949e;font-size:12px;">${T().news_loading}</div>` +
@@ -673,15 +726,16 @@ async function fetchNews() {
       const json = await res.json();
       if (json.status !== 'ok' || !json.items?.length) continue;
 
-      const items = json.items.slice(0, 8).map(item => ({
+      const items = json.items.slice(0,8).map(item => ({
         title:  item.title,
-        time:   item.pubDate ? item.pubDate.slice(0, 16) : '',
+        time:   item.pubDate ? item.pubDate.slice(0,16) : '',
         url:    item.link,
         source: src.name,
       }));
 
       if (items.length >= 3) {
-        renderNewsCards(items);
+        window._rawEnglishNews = items; // 保存英文原文，供語言切換使用
+        await translateAndRender(items, currentLang);
         console.log(`✅ 新聞抓取成功 from ${src.name}: ${items.length} 條`);
         return;
       }
@@ -690,7 +744,7 @@ async function fetchNews() {
     }
   }
 
-  // 全部失敗：移除骨架，顯示提示
+  // 全部失敗
   const notice = document.createElement('div');
   notice.style.cssText = 'padding:10px 16px;color:#f0883e;font-size:12px;';
   notice.textContent = T().news_fail;
