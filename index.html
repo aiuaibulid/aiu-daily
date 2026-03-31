@@ -334,7 +334,9 @@ const LANGS = {
     fng_label:   '😱 恐懼&貪婪指數',
     mcap_label:  '🌐 加密總市值',
     ls_label:    '⚖️ BTC 多空比（Binance）',
-    news_notice: '💡 新聞數據每次開啟頁面時顯示最新抓取內容。如需更新請點選「立即刷新」，或直接前往原文來源。',
+    news_notice: '💡 點選「立即刷新」可更新所有資訊，包含最新新聞。',
+    news_loading:'⏳ 正在抓取最新新聞...',
+    news_fail:   '⚠️ 新聞抓取失敗，顯示上次快取內容。',
     read_more:   '查看原文 →',
     refresh:     '⟳ 立即刷新',
     refreshing:  '⟳ 刷新中...',
@@ -362,7 +364,9 @@ const LANGS = {
     fng_label:   '😱 恐惧&贪婪指数',
     mcap_label:  '🌐 加密总市值',
     ls_label:    '⚖️ BTC 多空比（Binance）',
-    news_notice: '💡 新闻数据每次开启页面时显示最新抓取内容。如需更新请点击「立即刷新」，或直接前往原文来源。',
+    news_notice: '💡 点击「立即刷新」可更新所有资讯，包含最新新闻。',
+    news_loading:'⏳ 正在抓取最新新闻...',
+    news_fail:   '⚠️ 新闻抓取失败，显示上次缓存内容。',
     read_more:   '查看原文 →',
     refresh:     '⟳ 立即刷新',
     refreshing:  '⟳ 刷新中...',
@@ -390,7 +394,9 @@ const LANGS = {
     fng_label:   '😱 Fear & Greed Index',
     mcap_label:  '🌐 Total Market Cap',
     ls_label:    '⚖️ BTC L/S Ratio (Binance)',
-    news_notice: '💡 News is updated daily at 09:00 (UTC+8). Token prices refresh every 5 minutes.',
+    news_notice: '💡 Click "Refresh" to update all data including the latest news.',
+    news_loading:'⏳ Fetching latest news...',
+    news_fail:   '⚠️ News fetch failed, showing cached content.',
     read_more:   'Read more →',
     refresh:     '⟳ Refresh',
     refreshing:  '⟳ Refreshing...',
@@ -592,6 +598,132 @@ async function fetchLS() {
   renderLS(longPct, shortPct);
 }
 
+// ── News Keywords ─────────────────────────────────────────────
+const NEWS_KEYWORDS = {
+  "ETF":"#ETF","美聯儲":"#美聯儲","美联储":"#美联储","通脹":"#宏觀","通胀":"#宏观",
+  "監管":"#監管","监管":"#监管","巨鯨":"#巨鯨","巨鲸":"#巨鲸","機構":"#機構","机构":"#机构",
+  "比特幣":"#BTC","比特币":"#BTC","BTC":"#BTC","以太坊":"#ETH","ETH":"#ETH",
+  "Solana":"#SOL","SOL":"#SOL","穩定幣":"#穩定幣","稳定币":"#稳定币",
+  "融資":"#融資","融资":"#融资","量子":"#量子","SEC":"#SEC","Fed":"#Fed",
+};
+function extractTags(title) {
+  const tags = [];
+  for (const [kw, tag] of Object.entries(NEWS_KEYWORDS)) {
+    if (title.includes(kw) && !tags.includes(tag)) tags.push(tag);
+    if (tags.length >= 3) break;
+  }
+  return tags;
+}
+
+// ── Render News Cards ─────────────────────────────────────────
+function renderNewsCards(items) {
+  if (!items || !items.length) return;
+  window._lastNewsItems = items;
+  const now = new Date().toISOString().slice(0,10);
+  $('news-list').innerHTML =
+    '<!-- NEWS_START -->\n' +
+    items.slice(0,5).map((item, i) => {
+      const tags = extractTags(item.title)
+        .map(t => `<span class="tag">${t}</span>`).join('');
+      const safeTitle = item.title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const safeUrl   = item.url.replace(/"/g,'%22');
+      return `    <a class="news-card" href="${safeUrl}" target="_blank">
+      <div class="news-index">${String(i+1).padStart(2,'0')}</div>
+      <div class="news-body">
+        <div class="news-title">${safeTitle}</div>
+        <div class="news-footer">
+          ${tags}
+          <a class="news-link" href="${safeUrl}" target="_blank" data-i18n="read_more">${T().read_more}</a>
+          <span class="news-time">${item.time || now} · ${item.source}</span>
+        </div>
+      </div>
+    </a>`;
+    }).join('\n') +
+    '\n    <!-- NEWS_END -->';
+}
+
+// ── Fetch News (via CORS Proxy) ───────────────────────────────
+const NEWS_SOURCES = [
+  { url: 'https://www.theblockbeats.info/newsflash', name: 'BlockBeats',
+    selector: '.newsflash-item,.news-item,article',
+    titleSel: 'h3,h2,.title,.news-title', timeSel: 'time,.time,.date',
+    domain: 'https://www.theblockbeats.info' },
+  { url: 'https://www.panewslab.com/zh/newsflash', name: 'PANews',
+    selector: '.news-item,.flash-item,article',
+    titleSel: 'h3,h2,.title', timeSel: 'time,.time',
+    domain: 'https://www.panewslab.com' },
+  { url: 'https://www.odaily.news/newsflash', name: 'Odaily',
+    selector: '.newsflash-item,.flash-item,article',
+    titleSel: 'h3,h2,.title', timeSel: 'time,.time',
+    domain: 'https://www.odaily.news' },
+];
+
+async function fetchNews() {
+  // 顯示 loading 骨架
+  $('news-list').innerHTML = `
+    <!-- NEWS_START -->
+    <div style="padding:16px;color:#8b949e;font-size:13px;">${T().news_loading}</div>
+    ${[1,2,3,4,5].map(() => `
+    <div class="news-card" style="pointer-events:none;">
+      <div class="news-index" style="color:#f0b42910;">00</div>
+      <div class="news-body" style="flex:1;">
+        <div class="skeleton" style="height:18px;width:80%;margin-bottom:8px;"></div>
+        <div class="skeleton" style="height:12px;width:40%;"></div>
+      </div>
+    </div>`).join('')}
+    <!-- NEWS_END -->`;
+
+  for (const src of NEWS_SOURCES) {
+    try {
+      const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(src.url)}`;
+      const res  = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+      const json = await res.json();
+      if (!json.contents) continue;
+
+      const doc   = new DOMParser().parseFromString(json.contents, 'text/html');
+      const nodes = doc.querySelectorAll(src.selector);
+      const items = [];
+
+      for (const el of nodes) {
+        const titleEl = el.querySelector(src.titleSel);
+        const timeEl  = el.querySelector(src.timeSel);
+        const linkEl  = el.querySelector('a[href]');
+        if (!titleEl) continue;
+        const title = titleEl.textContent.trim();
+        if (title.length < 5) continue;
+        let href = linkEl ? linkEl.getAttribute('href') : src.url;
+        if (href && href.startsWith('/')) href = src.domain + href;
+        items.push({
+          title,
+          time: timeEl ? timeEl.textContent.trim() : '',
+          url:  href || src.url,
+          source: src.name,
+        });
+        if (items.length >= 8) break;
+      }
+
+      if (items.length >= 3) {
+        renderNewsCards(items);
+        console.log(`✅ 新聞抓取成功 from ${src.name}：${items.length} 條`);
+        return;
+      }
+    } catch (e) {
+      console.warn(`⚠️ ${src.name} 抓取失敗:`, e.message);
+    }
+  }
+
+  // 全部失敗：顯示提示但保留舊內容結構
+  const existing = $('news-list').innerHTML;
+  if (existing.includes('NEWS_START')) {
+    // 已有骨架，恢復提示
+    const notice = document.createElement('div');
+    notice.style.cssText = 'padding:10px 16px;color:#f0883e;font-size:12px;';
+    notice.textContent = T().news_fail;
+    $('news-list').prepend(notice);
+    setTimeout(() => notice.remove(), 4000);
+  }
+}
+
 // ── Countdown ─────────────────────────────────────────────────
 let countdownSec = 300, countdownTimer = null;
 function startCountdown() {
@@ -616,7 +748,7 @@ async function fetchAll() {
   updateDateHeader();
 
   const results = await Promise.allSettled([
-    fetchFNG(), fetchGlobal(), fetchTokens(), fetchLS()
+    fetchFNG(), fetchGlobal(), fetchTokens(), fetchLS(), fetchNews()
   ]);
 
   const failed = results.filter(r => r.status === 'rejected').length;
