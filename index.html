@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIU Daily 繚 Crypto News</title>
+  <title>AIU Daily · Crypto News</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -15,7 +15,7 @@
       padding-bottom: 48px;
     }
 
-    /* ?? Header ?? */
+    /* ── Header ── */
     .header {
       background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
       border-bottom: 1px solid #f0b42933;
@@ -28,7 +28,7 @@
     .header h1 span { color: #f0b429; }
     .header-date { font-size: 14px; color: #8b949e; }
 
-    /* ?? Lang Switcher ?? */
+    /* ── Lang Switcher ── */
     .lang-switcher {
       position: absolute;
       top: 20px; right: 24px;
@@ -75,10 +75,10 @@
     .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .countdown { font-size: 12px; color: #484f58; }
 
-    /* ?? Container ?? */
+    /* ── Container ── */
     .container { max-width: 1100px; margin: 0 auto; padding: 28px 24px 0; }
 
-    /* ?? Section Title ?? */
+    /* ── Section Title ── */
     .section-title {
       font-size: 12px; font-weight: 600; color: #f0b429;
       letter-spacing: 2px; text-transform: uppercase;
@@ -87,7 +87,7 @@
     }
     .section-title::after { content:''; flex:1; height:1px; background:#21262d; }
 
-    /* ?? Skeleton ?? */
+    /* ── Skeleton ── */
     .skeleton {
       background: linear-gradient(90deg,#21262d 25%,#2d333b 50%,#21262d 75%);
       background-size: 200% 100%;
@@ -96,7 +96,7 @@
     }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    /* ?? Market Cards ?? */
+    /* ── Market Cards ── */
     .market-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:28px; }
     .market-card {
       background:#161b22; border:1px solid #21262d; border-radius:12px;
@@ -124,7 +124,7 @@
     .ls-labels .long-label  { color:#3fb950; }
     .ls-labels .short-label { color:#f85149; }
 
-    /* ?? News ?? */
+    /* ── News ── */
     .news-list { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
     .news-card {
       background:#161b22; border:1px solid #21262d; border-radius:12px;
@@ -152,7 +152,7 @@
       padding:8px 14px; margin-bottom:10px; display:none;
     }
 
-    /* ?? Tokens ?? */
+    /* ── Tokens ── */
     .tokens-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:28px; }
     .token-card {
       background:#161b22; border:1px solid #21262d; border-radius:12px;
@@ -168,7 +168,7 @@
     .token-change.up   { color:#3fb950; }
     .token-change.down { color:#f85149; }
 
-    /* ?? Footer ?? */
+    /* ── Footer ── */
     .footer { text-align:center; padding:20px; border-top:1px solid #21262d; margin-top:8px; }
     .footer p { font-size:11px; color:#484f58; line-height:1.8; }
 
@@ -185,8 +185,8 @@
 
 <!-- Header -->
 <div class="header">
-  <div class="header-logo">AIU Daily Report 繚 Live</div>
-  <h1>?? AIU <span data-i18n="title">瘥?啗?</span></h1>
+  <div class="header-logo">AIU Daily Report · Live</div>
+  <h1>🪙 AIU <span data-i18n="title">每日新聞</span></h1>
   <div class="header-date" id="header-date"></div>
   <div class="status-bar">
     <span><span class="status-dot" id="status-dot"></span></span>
@@ -197,8 +197,8 @@
 
   <!-- Language Switcher -->
   <div class="lang-switcher">
-    <button class="lang-btn active" onclick="setLang('zh-TW')">蝜葉</button>
-    <button class="lang-btn"        onclick="setLang('zh-CN')">蝞銝?/button>
+    <button class="lang-btn active" onclick="setLang('zh-TW')">繁中</button>
+    <button class="lang-btn"        onclick="setLang('zh-CN')">简中</button>
     <button class="lang-btn"        onclick="setLang('en')">EN</button>
   </div>
 </div>
@@ -206,11 +206,11 @@
 <div class="container">
 
   <!-- Market Overview -->
-  <div class="section-title" data-i18n="sec_market">?? 撣璁?</div>
+  <div class="section-title" data-i18n="sec_market">📊 市場概況</div>
   <div class="market-grid">
 
     <div class="market-card">
-      <div class="market-card-label" data-i18n="fng_label">? ?&amp;鞎芸帚?</div>
+      <div class="market-card-label" data-i18n="fng_label">😱 恐懼&amp;貪婪指數</div>
       <div class="market-card-value" id="fng-value"><div class="skeleton" style="width:60px;height:34px;"></div></div>
       <div class="market-card-sub" id="fng-label"></div>
       <div class="fear-gauge" id="fng-gauge-wrap" style="display:none;">
@@ -219,13 +219,13 @@
     </div>
 
     <div class="market-card">
-      <div class="market-card-label" data-i18n="mcap_label">?? ??蝮賢???/div>
+      <div class="market-card-label" data-i18n="mcap_label">🌐 加密總市值</div>
       <div class="market-card-value" id="mcap-value"><div class="skeleton" style="width:80px;height:34px;"></div></div>
       <div class="market-card-sub" id="mcap-change"></div>
     </div>
 
     <div class="market-card">
-      <div class="market-card-label" data-i18n="ls_label">?? BTC 憭征瘥?Binance嚗?/div>
+      <div class="market-card-label" data-i18n="ls_label">⚖️ BTC 多空比（Binance）</div>
       <div class="market-card-value" id="ls-value" style="font-size:15px;color:#8b949e;margin-top:6px;"></div>
       <div class="ls-wrap" id="ls-wrap" style="display:none;">
         <div class="ls-bar">
@@ -242,71 +242,71 @@
   </div>
 
   <!-- News Flash -->
-  <div class="section-title" data-i18n="sec_news">? 隞?啗?敹怨?</div>
-  <div class="news-notice" data-i18n="news_notice">? ?啗??豢?瘥活????＊蝷箸??唳??摰嫘???湔隢??詻??喳?啜???亙?敺??靘???/div>
-  <div class="news-en-note" id="news-en-note">?? News content is sourced from Chinese crypto media. Titles are displayed in their original language.</div>
+  <div class="section-title" data-i18n="sec_news">📰 今日新聞快訊</div>
+  <div class="news-notice" data-i18n="news_notice">💡 新聞數據每次開啟頁面時顯示最新抓取內容。如需更新請點選「立即刷新」，或直接前往原文來源。</div>
+  <div class="news-en-note" id="news-en-note">📌 News content is sourced from Chinese crypto media. Titles are displayed in their original language.</div>
   <div class="news-list" id="news-list">
     <!-- NEWS_START -->
-        <a class="news-card" href="https://cointelegraph.com/news/new-hampshire-s-bitcoin-backed-municipal-bond-edges-closer-to-launch-after-moodys-rating?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">01</div>
-            <div class="news-body">
-                <div class="news-title">新罕布什尔州的比特币支持债券获得穆迪评级</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/new-hampshire-s-bitcoin-backed-municipal-bond-edges-closer-to-launch-after-moodys-rating?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/caltech-researchers-theorize-quantum-computers-could-be-operational-before-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">02</div>
-            <div class="news-body">
-                <div class="news-title">研究人员表示，从理论上讲，量子计算机可能在2030年就绪</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/caltech-researchers-theorize-quantum-computers-could-be-operational-before-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/bitfarms-shares-rise-despite-285-million-net-loss-amid-ai-transition?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">03</div>
-            <div class="news-body">
-                <div class="news-title">随着比特币下跌， Bitfarms的损失扩大至2.85亿美元，但股价仍上涨</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/bitfarms-shares-rise-despite-285-million-net-loss-amid-ai-transition?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/solana-dex-volumes-drop-to-2024-lows-will-sol-hold-80-as-support?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">04</div>
-            <div class="news-body">
-                <div class="news-title">Solana DEX成交量降至2024年低点： SOL是否会持有$ 80作为支撑？</div>
-                <div class="news-footer">
-                    <span class="tag">#SOL</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/solana-dex-volumes-drop-to-2024-lows-will-sol-hold-80-as-support?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/bitcoin-stocks-soar-as-markets-respond-to-chance-of-us-and-israel-iran-war-ending?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">05</div>
-            <div class="news-body">
-                <div class="news-title">比特币，随着市场对美国和以色列-伊朗战争结束的可能性做出反应，股市飙升</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/bitcoin-stocks-soar-as-markets-respond-to-chance-of-us-and-israel-iran-war-ending?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <!-- NEWS_END -->
+    <a class="news-card" href="https://www.theblockbeats.info/newsflash" target="_blank">
+      <div class="news-index">01</div>
+      <div class="news-body">
+        <div class="news-title">🔐 量子計算威脅加密安全：約 690 萬枚休眠比特幣面臨風險</div>
+        <div class="news-footer">
+          <span class="tag">#量子計算</span><span class="tag">#安全威脅</span><span class="tag">#BTC</span>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
+          <span class="news-time">2026-03-31 15:56</span>
+        </div>
+      </div>
+    </a>
+    <a class="news-card" href="https://www.theblockbeats.info/newsflash" target="_blank">
+      <div class="news-index">02</div>
+      <div class="news-body">
+        <div class="news-title">🐋 巨鯨從 Binance 提走 1,000 枚 BTC，價值約 6,725 萬美元</div>
+        <div class="news-footer">
+          <span class="tag">#巨鯨</span><span class="tag">#鏈上動態</span><span class="tag">#BTC</span>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
+          <span class="news-time">2026-03-31 16:38</span>
+        </div>
+      </div>
+    </a>
+    <a class="news-card" href="https://www.theblockbeats.info/newsflash" target="_blank">
+      <div class="news-index">03</div>
+      <div class="news-body">
+        <div class="news-title">🏦 Keyrock 完成 C 輪融資，渣打銀行領投，估值達 11 億美元</div>
+        <div class="news-footer">
+          <span class="tag">#融資</span><span class="tag">#機構資金</span><span class="tag">#獨角獸</span>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
+          <span class="news-time">2026-03-31 16:35</span>
+        </div>
+      </div>
+    </a>
+    <a class="news-card" href="https://www.theblockbeats.info/newsflash" target="_blank">
+      <div class="news-index">04</div>
+      <div class="news-body">
+        <div class="news-title">💳 KB Card × Avalanche 合作推出「混合型穩定幣」信用卡支付</div>
+        <div class="news-footer">
+          <span class="tag">#穩定幣</span><span class="tag">#支付</span><span class="tag">#Avalanche</span>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
+          <span class="news-time">2026-03-31 16:51</span>
+        </div>
+      </div>
+    </a>
+    <a class="news-card" href="https://www.theblockbeats.info/newsflash" target="_blank">
+      <div class="news-index">05</div>
+      <div class="news-body">
+        <div class="news-title">📉 ETH 回調中巨鯨加倉：650 萬美元規模多單，均價 $2,043</div>
+        <div class="news-footer">
+          <span class="tag">#ETH</span><span class="tag">#巨鯨做多</span><span class="tag">#合約動態</span>
+          <a class="news-link" href="https://www.theblockbeats.info/newsflash" target="_blank" data-i18n="read_more">查看原文 →</a>
+          <span class="news-time">2026-03-31 15:41</span>
+        </div>
+      </div>
+    </a>
+    <!-- NEWS_END -->
   </div>
 
   <!-- Top Tokens -->
-  <div class="section-title" data-i18n="sec_tokens">? ?梢?隞?馳瞍脰?嚗?4h 繚 ?單?嚗?/div>
+  <div class="section-title" data-i18n="sec_tokens">🔥 熱門代幣漲跌（24h · 即時）</div>
   <div class="tokens-grid" id="tokens-grid">
     <div class="token-card"><div class="skeleton" style="height:120px;"></div></div>
     <div class="token-card"><div class="skeleton" style="height:120px;"></div></div>
@@ -319,91 +319,90 @@
 
 <!-- Footer -->
 <div class="footer">
-  <p data-i18n="disclaimer">?? ?砍??靘???銝??遙雿?鞈遣霅啜?撖疏撟???湧◢?芣扔擃?隢牲??隡啜?/p>
-  <p style="margin-top:4px;color:#6e7681;" data-i18n="sources">?單??豢?嚗oinGecko API 繚 alternative.me API?|??啗?靘?嚗lockBeats?|?AIU Daily 穢 2026</p>
+  <p data-i18n="disclaimer">⚠️ 本報告僅供參考，不構成任何投資建議。加密貨幣市場風險極高，請謹慎評估。</p>
+  <p style="margin-top:4px;color:#6e7681;" data-i18n="sources">即時數據：CoinGecko API · alternative.me API　|　新聞來源：BlockBeats　|　AIU Daily © 2026</p>
 </div>
 
-<!-- MARKET_DATA_START --><script>window.PRELOADED = {"fng": 8, "cap": 2428467134961.2163, "capChg": 1.0832897437275442, "tokens": [{"id": "bitcoin", "symbol": "btc", "name": "Bitcoin", "current_price": 68208, "price_change_percentage_24h": 1.07416, "type": "fixed"}, {"id": "ethereum", "symbol": "eth", "name": "Ethereum", "current_price": 2108.58, "price_change_percentage_24h": 2.37719, "type": "fixed"}, {"id": "solana", "symbol": "sol", "name": "Solana", "current_price": 83.61, "price_change_percentage_24h": 0.43984, "type": "fixed"}, {"id": "pudgy-penguins", "symbol": "pengu", "name": "Pudgy Penguins", "current_price": 0.00652814, "price_change_percentage_24h": 1.43424, "type": "trending"}, {"id": "siren-2", "symbol": "siren", "name": "Siren", "current_price": 0.327253, "price_change_percentage_24h": -80.78176, "type": "trending"}]};</script><!-- MARKET_DATA_END -->
 <script>
-// ?? i18n ?????????????????????????????????????????????????????
+// ── i18n ─────────────────────────────────────────────────────
 const LANGS = {
   'zh-TW': {
-    title:       '瘥?啗?',
-    sec_market:  '?? 撣璁?',
-    sec_news:    '? 隞?啗?敹怨?',
-    sec_tokens:  '? ?梢?隞?馳瞍脰?嚗?4h 繚 ?單?嚗?,
-    fng_label:   '? ?&鞎芸帚?',
-    mcap_label:  '?? ??蝮賢???,
-    ls_label:    '?? BTC 憭征瘥?Binance嚗?,
-    news_notice: '? 暺???喳?啜????CoinDesk 繚 CoinTelegraph 繚 Decrypt ??啣翰閮葉????交銝?9:00 ?芸??湔??,
-    news_loading:     '??甇?????唳??..',
-    news_translating: '?? 甇?蝧餉陌??擃葉??..',
-    news_fail:        '?? ?啗???憭望?嚗?蝔??岫??,
-    read_more:   '?亦??? ??,
-    refresh:     '??蝡?瑟',
-    refreshing:  '???瑟銝?..',
-    connecting:  '???豢?皞?..',
-    updating:    '甇??湔?豢?...',
-    updated:     '?豢?撌脫??,
-    partial_fail:'?典??豢??湔憭望?',
-    all_fail:    '?豢??湔憭望?',
-    auto_refresh:'{m}:{s} 敺???,
-    long:        '憭',
-    short:       '蝛箸',
-    badge_fixed: '?箏?',
-    badge_trend: '?梢?',
-    fng_states:  ['璆萄漲?','?','銝剜?,'鞎芸帚','璆萄漲鞎芸帚'],
-    coin_names:  { bitcoin:'瘥撟?, ethereum:'隞亙云??, solana:'Solana' },
-    disclaimer:  '?? ?砍??靘???銝??遙雿?鞈遣霅啜?撖疏撟???湧◢?芣扔擃?隢牲??隡啜?,
-    sources:     '?單??豢?嚗oinGecko API 繚 alternative.me API?|??啗?靘?嚗lockBeats?|?AIU Daily 穢 2026',
-    date_fmt:    (y,m,d,wd) => `${y}撟?{m}??{d}????${'?乩?鈭?????[wd]}`,
+    title:       '每日新聞',
+    sec_market:  '📊 市場概況',
+    sec_news:    '📰 今日新聞快訊',
+    sec_tokens:  '🔥 熱門代幣漲跌（24h · 即時）',
+    fng_label:   '😱 恐懼&貪婪指數',
+    mcap_label:  '🌐 加密總市值',
+    ls_label:    '⚖️ BTC 多空比（Binance）',
+    news_notice: '💡 點選「立即刷新」即時抓取 CoinDesk · CoinTelegraph · Decrypt 最新快訊。中文新聞每日早上 9:00 自動更新。',
+    news_loading:     '⏳ 正在抓取最新新聞...',
+    news_translating: '🌐 正在翻譯成繁體中文...',
+    news_fail:        '⚠️ 新聞抓取失敗，請稍後再試。',
+    read_more:   '查看原文 →',
+    refresh:     '⟳ 立即刷新',
+    refreshing:  '⟳ 刷新中...',
+    connecting:  '連接數據源...',
+    updating:    '正在更新數據...',
+    updated:     '數據已更新',
+    partial_fail:'部分數據更新失敗',
+    all_fail:    '數據更新失敗',
+    auto_refresh:'{m}:{s} 後自動刷新',
+    long:        '多方',
+    short:       '空方',
+    badge_fixed: '固定',
+    badge_trend: '熱門',
+    fng_states:  ['極度恐懼','恐懼','中性','貪婪','極度貪婪'],
+    coin_names:  { bitcoin:'比特幣', ethereum:'以太坊', solana:'Solana' },
+    disclaimer:  '⚠️ 本報告僅供參考，不構成任何投資建議。加密貨幣市場風險極高，請謹慎評估。',
+    sources:     '即時數據：CoinGecko API · alternative.me API　|　新聞來源：BlockBeats　|　AIU Daily © 2026',
+    date_fmt:    (y,m,d,wd) => `${y}年${m}月${d}日 星期${'日一二三四五六'[wd]}`,
   },
   'zh-CN': {
-    title:       '瘥?圈',
-    sec_market:  '?? 撣璁',
-    sec_news:    '? 隞?圈敹怨悖',
-    sec_tokens:  '? ?剝隞??瘨刻?嚗?4h 繚 摰嚗?,
-    fng_label:   '? ?&韐芸帚?',
-    mcap_label:  '?? ???餃???,
-    ls_label:    '?? BTC 憭征瘥?Binance嚗?,
-    news_notice: '? ?孵???喳?啜?嗆???CoinDesk 繚 CoinTelegraph 繚 Decrypt ??啣翰霈胯葉??餅??交銝?9:00 ?芸?湔??,
-    news_loading:     '??甇?????唳??..',
-    news_translating: '?? 甇?蝧餉???雿葉??..',
-    news_fail:        '?? ?圈??憭梯揖嚗窈蝔?????,
-    read_more:   '?亦??? ??,
-    refresh:     '??蝡?瑟',
-    refreshing:  '???瑟銝?..',
-    connecting:  '餈?唳皞?..',
-    updating:    '甇??湔?唳...',
-    updated:     '?唳撌脫??,
-    partial_fail:'?典??唳?湔憭梯揖',
-    all_fail:    '?唳?湔憭梯揖',
-    auto_refresh:'{m}:{s} ??典??,
-    long:        '憭',
-    short:       '蝛箸',
-    badge_fixed: '?箏?',
-    badge_trend: '?剝',
-    fng_states:  ['?漲?','?','銝剜?,'韐芸帚','?漲韐芸帚'],
-    coin_names:  { bitcoin:'瘥撣?, ethereum:'隞亙云??, solana:'Solana' },
-    disclaimer:  '?? ?祆??靘???銝??遙雿?韏遣霈柴?撖揮撣??粹??拇?擃?霂瑁馬??隡啜?,
-    sources:     '摰?唳嚗oinGecko API 繚 alternative.me API?|??圈?交?嚗lockBeats?|?AIU Daily 穢 2026',
-    date_fmt:    (y,m,d,wd) => `${y}撟?{m}??{d}????${'?乩?鈭?????[wd]}`,
+    title:       '每日新闻',
+    sec_market:  '📊 市场概况',
+    sec_news:    '📰 今日新闻快讯',
+    sec_tokens:  '🔥 热门代币涨跌（24h · 实时）',
+    fng_label:   '😱 恐惧&贪婪指数',
+    mcap_label:  '🌐 加密总市值',
+    ls_label:    '⚖️ BTC 多空比（Binance）',
+    news_notice: '💡 点击「立即刷新」即时抓取 CoinDesk · CoinTelegraph · Decrypt 最新快讯。中文新闻每日早上 9:00 自动更新。',
+    news_loading:     '⏳ 正在抓取最新新闻...',
+    news_translating: '🌐 正在翻译成简体中文...',
+    news_fail:        '⚠️ 新闻抓取失败，请稍后再试。',
+    read_more:   '查看原文 →',
+    refresh:     '⟳ 立即刷新',
+    refreshing:  '⟳ 刷新中...',
+    connecting:  '连接数据源...',
+    updating:    '正在更新数据...',
+    updated:     '数据已更新',
+    partial_fail:'部分数据更新失败',
+    all_fail:    '数据更新失败',
+    auto_refresh:'{m}:{s} 后自动刷新',
+    long:        '多方',
+    short:       '空方',
+    badge_fixed: '固定',
+    badge_trend: '热门',
+    fng_states:  ['极度恐惧','恐惧','中性','贪婪','极度贪婪'],
+    coin_names:  { bitcoin:'比特币', ethereum:'以太坊', solana:'Solana' },
+    disclaimer:  '⚠️ 本报告仅供参考，不构成任何投资建议。加密货币市场风险极高，请谨慎评估。',
+    sources:     '实时数据：CoinGecko API · alternative.me API　|　新闻来源：BlockBeats　|　AIU Daily © 2026',
+    date_fmt:    (y,m,d,wd) => `${y}年${m}月${d}日 星期${'日一二三四五六'[wd]}`,
   },
   'en': {
     title:       'Daily News',
-    sec_market:  '?? Market Overview',
-    sec_news:    '? News Flash',
-    sec_tokens:  '? Top Tokens (24h 繚 Live)',
-    fng_label:   '? Fear & Greed Index',
-    mcap_label:  '?? Total Market Cap',
-    ls_label:    '?? BTC L/S Ratio (Binance)',
-    news_notice: '? Click "Refresh" to fetch live news from CoinDesk 繚 CoinTelegraph 繚 Decrypt. Chinese news auto-updates daily at 09:00 (UTC+8).',
-    news_loading:     '??Fetching latest news...',
-    news_translating: '?? Displaying in English...',
-    news_fail:        '?? News fetch failed, please try again later.',
-    read_more:   'Read more ??,
-    refresh:     '??Refresh',
-    refreshing:  '??Refreshing...',
+    sec_market:  '📊 Market Overview',
+    sec_news:    '📰 News Flash',
+    sec_tokens:  '🔥 Top Tokens (24h · Live)',
+    fng_label:   '😱 Fear & Greed Index',
+    mcap_label:  '🌐 Total Market Cap',
+    ls_label:    '⚖️ BTC L/S Ratio (Binance)',
+    news_notice: '💡 Click "Refresh" to fetch live news from CoinDesk · CoinTelegraph · Decrypt. Chinese news auto-updates daily at 09:00 (UTC+8).',
+    news_loading:     '⏳ Fetching latest news...',
+    news_translating: '🌐 Displaying in English...',
+    news_fail:        '⚠️ News fetch failed, please try again later.',
+    read_more:   'Read more →',
+    refresh:     '⟳ Refresh',
+    refreshing:  '⟳ Refreshing...',
     connecting:  'Connecting...',
     updating:    'Updating data...',
     updated:     'Updated',
@@ -416,8 +415,8 @@ const LANGS = {
     badge_trend: 'Trending',
     fng_states:  ['Extreme Fear','Fear','Neutral','Greed','Extreme Greed'],
     coin_names:  { bitcoin:'Bitcoin', ethereum:'Ethereum', solana:'Solana' },
-    disclaimer:  '?? This report is for informational purposes only and does not constitute investment advice.',
-    sources:     'Live data: CoinGecko API 繚 alternative.me API  |  News: BlockBeats  |  AIU Daily 穢 2026',
+    disclaimer:  '⚠️ This report is for informational purposes only and does not constitute investment advice.',
+    sources:     'Live data: CoinGecko API · alternative.me API  |  News: BlockBeats  |  AIU Daily © 2026',
     date_fmt:    (y,m,d,wd) => new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),
   }
 };
@@ -426,7 +425,7 @@ let currentLang = localStorage.getItem('aiu-lang') || 'zh-TW';
 const T = () => LANGS[currentLang];
 const $ = id => document.getElementById(id);
 
-// ?? Apply language ????????????????????????????????????????????
+// ── Apply language ────────────────────────────────────────────
 function applyLang(lang) {
   currentLang = lang;
   localStorage.setItem('aiu-lang', lang);
@@ -435,7 +434,7 @@ function applyLang(lang) {
   // Update active button
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.textContent.trim() === {
-      'zh-TW':'蝜葉','zh-CN':'蝞銝?,'en':'EN'
+      'zh-TW':'繁中','zh-CN':'简中','en':'EN'
     }[lang]);
   });
 
@@ -456,16 +455,17 @@ function applyLang(lang) {
   const statusText = $('status-text').textContent;
   if (statusText) $('status-text').textContent = T().connecting;
 
-  // ?皜脫?撌脰??亦????豢?
+  // 重新渲染已載入的動態數據
   if (window._lastTokenData)              renderTokens(window._lastTokenData);
   if (window._lastFngValue !== undefined) renderFng(window._lastFngValue);
   if (window._lastLS)                     renderLS(window._lastLS.longPct, window._lastLS.shortPct);
-  // 隤??????啁蕃霅舀???交??望???嚗?  if (window._rawEnglishNews)             translateAndRender(window._rawEnglishNews, lang);
+  // 語言切換時重新翻譯新聞（若有英文原文）
+  if (window._rawEnglishNews)             translateAndRender(window._rawEnglishNews, lang);
 }
 
 function setLang(lang) { applyLang(lang); }
 
-// ?? Helpers ???????????????????????????????????????????????????
+// ── Helpers ───────────────────────────────────────────────────
 function formatPrice(n) {
   if (n >= 1000) return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
   if (n >= 1)    return '$' + n.toFixed(2);
@@ -497,7 +497,7 @@ function setStatus(state, text) {
   $('status-text').textContent = text;
 }
 
-// ?? Date Header ???????????????????????????????????????????????
+// ── Date Header ───────────────────────────────────────────────
 function updateDateHeader() {
   const now = new Date();
   $('header-date').textContent = T().date_fmt(
@@ -505,7 +505,7 @@ function updateDateHeader() {
   );
 }
 
-// ?? Render helpers ????????????????????????????????????????????
+// ── Render helpers ────────────────────────────────────────────
 function renderFng(v) {
   window._lastFngValue = v;
   const cls = fngClass(v);
@@ -534,7 +534,7 @@ function renderTokens(allCoins) {
     const chg = coin.price_change_percentage_24h;
     const up  = chg >= 0;
     const cls = up ? 'up' : 'down';
-    const sign = up ? '??+' : '??';
+    const sign = up ? '▲ +' : '▼ ';
     const badgeCls = coin.type === 'trending' ? 'token-badge trending' : 'token-badge';
     const badge = coin.type === 'trending' ? T().badge_trend : T().badge_fixed;
     const name  = T().coin_names[coin.id] || coin.name;
@@ -549,7 +549,7 @@ function renderTokens(allCoins) {
   }).join('');
 }
 
-// ?? API Fetches ???????????????????????????????????????????????
+// ── API Fetches ───────────────────────────────────────────────
 async function fetchFNG() {
   const res  = await fetch('https://api.alternative.me/fng/?limit=1');
   const json = await res.json();
@@ -562,7 +562,7 @@ async function fetchGlobal() {
   const cap  = json.data.total_market_cap.usd;
   const chg  = json.data.market_cap_change_percentage_24h_usd;
   $('mcap-value').textContent = formatCap(cap);
-  const sign  = chg >= 0 ? '??+' : '??';
+  const sign  = chg >= 0 ? '▲ +' : '▼ ';
   const color = chg >= 0 ? '#3fb950' : '#f85149';
   $('mcap-change').innerHTML = `<span style="color:${color}">24h ${sign}${Math.abs(chg).toFixed(2)}%</span>`;
 }
@@ -601,7 +601,7 @@ async function fetchLS() {
   renderLS(longPct, shortPct);
 }
 
-// ?? News Sources (RSS via rss2json ??CORS friendly) ???????????
+// ── News Sources (RSS via rss2json — CORS friendly) ───────────
 const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
 const NEWS_SOURCES = [
   { rss: 'https://www.coindesk.com/arc/outboundfeeds/rss/', name: 'CoinDesk' },
@@ -609,18 +609,18 @@ const NEWS_SOURCES = [
   { rss: 'https://decrypt.co/feed',                         name: 'Decrypt' },
 ];
 
-// ?? News Keywords (EN + ZH) ???????????????????????????????????
+// ── News Keywords (EN + ZH) ───────────────────────────────────
 const NEWS_KEYWORDS = {
   "ETF":"#ETF","SEC":"#SEC","Fed":"#Fed","Federal Reserve":"#Fed",
-  "regulation":"#??恣","regulatory":"#??恣","ban":"#??恣",
-  "whale":"#撌券祠","institution":"#璈?","institutional":"#璈?",
+  "regulation":"#監管","regulatory":"#監管","ban":"#監管",
+  "whale":"#巨鯨","institution":"#機構","institutional":"#機構",
   "Bitcoin":"#BTC","BTC":"#BTC","Ethereum":"#ETH","ETH":"#ETH",
-  "Solana":"#SOL","SOL":"#SOL","stablecoin":"#蝛拙?撟?,
-  "funding":"#??","raises":"#??","quantum":"#??",
-  "inflation":"#摰?","macro":"#摰?","tariff":"#摰?",
-  "瘥撟?:"#BTC","瘥撣?:"#BTC","隞亙云??:"#ETH",
-  "撌券祠":"#撌券祠","撌券硫":"#撌券硫","璈?":"#璈?","?箸?":"#?箸?",
-  "??恣":"#??恣","?恣":"#?恣","蝛拙?撟?:"#蝛拙?撟?,"蝔喳?撣?:"#蝔喳?撣?,
+  "Solana":"#SOL","SOL":"#SOL","stablecoin":"#穩定幣",
+  "funding":"#融資","raises":"#融資","quantum":"#量子",
+  "inflation":"#宏觀","macro":"#宏觀","tariff":"#宏觀",
+  "比特幣":"#BTC","比特币":"#BTC","以太坊":"#ETH",
+  "巨鯨":"#巨鯨","巨鲸":"#巨鲸","機構":"#機構","机构":"#机构",
+  "監管":"#監管","监管":"#监管","穩定幣":"#穩定幣","稳定币":"#稳定币",
 };
 function extractTags(title) {
   const tags = [];
@@ -631,93 +631,58 @@ function extractTags(title) {
   return tags;
 }
 
-// ?? Google Translate ??????????????????????????????????????????
-// 雿輻 Google Translate ?祇?蝡舫?嚗?鞎鳴??⊿? API key嚗?const GT_LANG = { 'zh-TW': 'zh-TW', 'zh-CN': 'zh-CN', 'en': 'en' };
+// ── Google Translate ──────────────────────────────────────────
+// 使用 Google Translate 公開端點（免費，無需 API key）
+const GT_LANG = { 'zh-TW': 'zh-TW', 'zh-CN': 'zh-CN', 'en': 'en' };
 
 async function translateBatch(titles, targetLang) {
-  if (targetLang === 'en') return titles; // ?望???嚗?亥???  const tl = GT_LANG[targetLang] || 'zh-TW';
-  // ?典銝??蝚西??蔥嚗?甈?API 隢?蝧餉陌???憿?  const SEP = ' 漈?';
+  if (targetLang === 'en') return titles; // 英文原文，直接返回
+  const tl = GT_LANG[targetLang] || 'zh-TW';
+  // 用唯一分隔符號合併，一次 API 請求翻譯所有標題
+  const SEP = ' ⸻ ';
   const combined = titles.join(SEP);
   const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${encodeURIComponent(tl)}&dt=t&q=${encodeURIComponent(combined)}`;
   const res  = await fetch(url, { signal: AbortSignal.timeout(8000) });
   const data = await res.json();
   const translated = data[0].map(chunk => chunk[0]).join('');
-  // ???泵????憿?靽桀蝛箇
+  // 按分隔符切回各標題，修剪空白
   return translated.split(SEP).map(s => s.trim());
 }
 
-// ?? Render News Cards ?????????????????????????????????????????
+// ── Render News Cards ─────────────────────────────────────────
 function renderNewsCards(items) {
   if (!items?.length) return;
   const now = new Date().toISOString().slice(0,10);
   $('news-list').innerHTML =
-    '<!-- NEWS_START -->
-        <a class="news-card" href="https://cointelegraph.com/news/new-hampshire-s-bitcoin-backed-municipal-bond-edges-closer-to-launch-after-moodys-rating?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">01</div>
-            <div class="news-body">
-                <div class="news-title">新罕布什尔州的比特币支持债券获得穆迪评级</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/new-hampshire-s-bitcoin-backed-municipal-bond-edges-closer-to-launch-after-moodys-rating?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/caltech-researchers-theorize-quantum-computers-could-be-operational-before-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">02</div>
-            <div class="news-body">
-                <div class="news-title">研究人员表示，从理论上讲，量子计算机可能在2030年就绪</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/caltech-researchers-theorize-quantum-computers-could-be-operational-before-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/bitfarms-shares-rise-despite-285-million-net-loss-amid-ai-transition?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">03</div>
-            <div class="news-body">
-                <div class="news-title">随着比特币下跌， Bitfarms的损失扩大至2.85亿美元，但股价仍上涨</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/bitfarms-shares-rise-despite-285-million-net-loss-amid-ai-transition?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/solana-dex-volumes-drop-to-2024-lows-will-sol-hold-80-as-support?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">04</div>
-            <div class="news-body">
-                <div class="news-title">Solana DEX成交量降至2024年低点： SOL是否会持有$ 80作为支撑？</div>
-                <div class="news-footer">
-                    <span class="tag">#SOL</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/solana-dex-volumes-drop-to-2024-lows-will-sol-hold-80-as-support?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/bitcoin-stocks-soar-as-markets-respond-to-chance-of-us-and-israel-iran-war-ending?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">05</div>
-            <div class="news-body">
-                <div class="news-title">比特币，随着市场对美国和以色列-伊朗战争结束的可能性做出反应，股市飙升</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/bitcoin-stocks-soar-as-markets-respond-to-chance-of-us-and-israel-iran-war-ending?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <!-- NEWS_END -->';
+    '<!-- NEWS_START -->\n' +
+    items.slice(0,5).map((item, i) => {
+      const tags    = extractTags(item.title).map(t => `<span class="tag">${t}</span>`).join('');
+      const safe    = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const safeUrl = item.url.replace(/"/g,'%22');
+      return `    <a class="news-card" href="${safeUrl}" target="_blank">
+      <div class="news-index">${String(i+1).padStart(2,'0')}</div>
+      <div class="news-body">
+        <div class="news-title">${safe(item.title)}</div>
+        <div class="news-footer">
+          ${tags}
+          <a class="news-link" href="${safeUrl}" target="_blank" data-i18n="read_more">${T().read_more}</a>
+          <span class="news-time">${item.time || now} · ${item.source}</span>
+        </div>
+      </div>
+    </a>`;
+    }).join('\n') +
+    '\n    <!-- NEWS_END -->';
 }
 
-// ?? Translate + Render ????????????????????????????????????????
+// ── Translate + Render ────────────────────────────────────────
 async function translateAndRender(rawItems, lang) {
   if (!rawItems?.length) return;
   if (lang === 'en') {
     renderNewsCards(rawItems);
     return;
   }
-  // 憿舐內蝧餉陌銝剜?蝷?  const indicator = document.createElement('div');
+  // 顯示翻譯中提示
+  const indicator = document.createElement('div');
   indicator.style.cssText = 'padding:8px 16px;color:#f0b429;font-size:11px;';
   indicator.textContent = T().news_translating;
   $('news-list').prepend(indicator);
@@ -728,76 +693,31 @@ async function translateAndRender(rawItems, lang) {
     indicator.remove();
     const translatedItems = rawItems.slice(0,5).map((item, idx) => ({
       ...item,
-      title: translated[idx] || item.title, // 蝧餉陌憭望??????
+      title: translated[idx] || item.title, // 翻譯失敗時回退原文
     }));
     renderNewsCards(translatedItems);
   } catch (e) {
     indicator.remove();
-    console.warn('蝧餉陌憭望?嚗＊蝷箄????', e.message);
-    renderNewsCards(rawItems); // 蝧餉陌憭望?嚗＊蝷箄????  }
+    console.warn('翻譯失敗，顯示英文原文:', e.message);
+    renderNewsCards(rawItems); // 翻譯失敗，顯示英文原文
+  }
 }
 
-// ?? Fetch News (via rss2json) ?????????????????????????????????
+// ── Fetch News (via rss2json) ─────────────────────────────────
 async function fetchNews() {
-  // 憿舐內撉冽頛
+  // 顯示骨架載入
   $('news-list').innerHTML =
-    '<!-- NEWS_START -->
-        <a class="news-card" href="https://cointelegraph.com/news/new-hampshire-s-bitcoin-backed-municipal-bond-edges-closer-to-launch-after-moodys-rating?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">01</div>
-            <div class="news-body">
-                <div class="news-title">新罕布什尔州的比特币支持债券获得穆迪评级</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/new-hampshire-s-bitcoin-backed-municipal-bond-edges-closer-to-launch-after-moodys-rating?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/caltech-researchers-theorize-quantum-computers-could-be-operational-before-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">02</div>
-            <div class="news-body">
-                <div class="news-title">研究人员表示，从理论上讲，量子计算机可能在2030年就绪</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/caltech-researchers-theorize-quantum-computers-could-be-operational-before-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/bitfarms-shares-rise-despite-285-million-net-loss-amid-ai-transition?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">03</div>
-            <div class="news-body">
-                <div class="news-title">随着比特币下跌， Bitfarms的损失扩大至2.85亿美元，但股价仍上涨</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/bitfarms-shares-rise-despite-285-million-net-loss-amid-ai-transition?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/solana-dex-volumes-drop-to-2024-lows-will-sol-hold-80-as-support?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">04</div>
-            <div class="news-body">
-                <div class="news-title">Solana DEX成交量降至2024年低点： SOL是否会持有$ 80作为支撑？</div>
-                <div class="news-footer">
-                    <span class="tag">#SOL</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/solana-dex-volumes-drop-to-2024-lows-will-sol-hold-80-as-support?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/bitcoin-stocks-soar-as-markets-respond-to-chance-of-us-and-israel-iran-war-ending?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">05</div>
-            <div class="news-body">
-                <div class="news-title">比特币，随着市场对美国和以色列-伊朗战争结束的可能性做出反应，股市飙升</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/bitcoin-stocks-soar-as-markets-respond-to-chance-of-us-and-israel-iran-war-ending?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <!-- NEWS_END -->';
+    '<!-- NEWS_START -->\n' +
+    `<div style="padding:12px 16px;color:#8b949e;font-size:12px;">${T().news_loading}</div>` +
+    [1,2,3,4,5].map(() => `
+    <div class="news-card" style="pointer-events:none;">
+      <div class="news-index" style="color:#f0b42910;">00</div>
+      <div class="news-body" style="flex:1;">
+        <div class="skeleton" style="height:16px;width:75%;margin-bottom:8px;"></div>
+        <div class="skeleton" style="height:11px;width:35%;"></div>
+      </div>
+    </div>`).join('') +
+    '\n<!-- NEWS_END -->';
 
   for (const src of NEWS_SOURCES) {
     try {
@@ -814,82 +734,26 @@ async function fetchNews() {
       }));
 
       if (items.length >= 3) {
-        window._rawEnglishNews = items; // 靽??望???嚗?隤???雿輻
+        window._rawEnglishNews = items; // 保存英文原文，供語言切換使用
         await translateAndRender(items, currentLang);
-        console.log(`???啗????? from ${src.name}: ${items.length} 璇);
+        console.log(`✅ 新聞抓取成功 from ${src.name}: ${items.length} 條`);
         return;
       }
     } catch (e) {
-      console.warn(`?? ${src.name} 憭望?:`, e.message);
+      console.warn(`⚠️ ${src.name} 失敗:`, e.message);
     }
   }
 
-  // ?券憭望?
+  // 全部失敗
   const notice = document.createElement('div');
   notice.style.cssText = 'padding:10px 16px;color:#f0883e;font-size:12px;';
   notice.textContent = T().news_fail;
-  $('news-list').innerHTML = '<!-- NEWS_START -->
-        <a class="news-card" href="https://cointelegraph.com/news/new-hampshire-s-bitcoin-backed-municipal-bond-edges-closer-to-launch-after-moodys-rating?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">01</div>
-            <div class="news-body">
-                <div class="news-title">新罕布什尔州的比特币支持债券获得穆迪评级</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/new-hampshire-s-bitcoin-backed-municipal-bond-edges-closer-to-launch-after-moodys-rating?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/caltech-researchers-theorize-quantum-computers-could-be-operational-before-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">02</div>
-            <div class="news-body">
-                <div class="news-title">研究人员表示，从理论上讲，量子计算机可能在2030年就绪</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/caltech-researchers-theorize-quantum-computers-could-be-operational-before-2030?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/bitfarms-shares-rise-despite-285-million-net-loss-amid-ai-transition?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">03</div>
-            <div class="news-body">
-                <div class="news-title">随着比特币下跌， Bitfarms的损失扩大至2.85亿美元，但股价仍上涨</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/bitfarms-shares-rise-despite-285-million-net-loss-amid-ai-transition?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/solana-dex-volumes-drop-to-2024-lows-will-sol-hold-80-as-support?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">04</div>
-            <div class="news-body">
-                <div class="news-title">Solana DEX成交量降至2024年低点： SOL是否会持有$ 80作为支撑？</div>
-                <div class="news-footer">
-                    <span class="tag">#SOL</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/solana-dex-volumes-drop-to-2024-lows-will-sol-hold-80-as-support?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/bitcoin-stocks-soar-as-markets-respond-to-chance-of-us-and-israel-iran-war-ending?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">05</div>
-            <div class="news-body">
-                <div class="news-title">比特币，随着市场对美国和以色列-伊朗战争结束的可能性做出反应，股市飙升</div>
-                <div class="news-footer">
-                    <span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/bitcoin-stocks-soar-as-markets-respond-to-chance-of-us-and-israel-iran-war-ending?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-01 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <!-- NEWS_END -->';
+  $('news-list').innerHTML = '<!-- NEWS_START -->\n<!-- NEWS_END -->';
   $('news-list').prepend(notice);
   setTimeout(() => notice.remove(), 5000);
 }
 
-// ?? Countdown ?????????????????????????????????????????????????
+// ── Countdown ─────────────────────────────────────────────────
 let countdownSec = 300, countdownTimer = null;
 function startCountdown() {
   countdownSec = 300;
@@ -904,7 +768,7 @@ function startCountdown() {
   }, 1000);
 }
 
-// ?? Main Fetch ????????????????????????????????????????????????
+// ── Main Fetch ────────────────────────────────────────────────
 async function fetchAll() {
   const btn = $('refresh-btn');
   btn.disabled = true;
@@ -919,33 +783,18 @@ async function fetchAll() {
   const failed = results.filter(r => r.status === 'rejected').length;
   const now = new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
 
-  if (failed === 0)      setStatus('ok',      `${T().updated} 繚 ${now}`);
-  else if (failed < 4)   setStatus('loading', `${T().partial_fail} 繚 ${now}`);
-  else                   setStatus('error',   `${T().all_fail} 繚 ${now}`);
+  if (failed === 0)      setStatus('ok',      `${T().updated} · ${now}`);
+  else if (failed < 4)   setStatus('loading', `${T().partial_fail} · ${now}`);
+  else                   setStatus('error',   `${T().all_fail} · ${now}`);
 
   btn.disabled = false;
   btn.textContent = T().refresh;
   startCountdown();
 }
 
-// ?? Init ??????????????????????????????????????????????????????
+// ── Init ──────────────────────────────────────────────────────
 applyLang(currentLang);
 setStatus('loading', T().connecting);
-if (window.PRELOADED) {
-  try {
-    const p = window.PRELOADED;
-    if (p.fng != null) renderFng(p.fng);
-    if (p.cap != null) {
-      mcap-value.textContent = formatCap(p.cap);
-      const sign = p.capChg >= 0 ? '\u2191 +' : '\u2193 ';
-      const color = p.capChg >= 0 ? '#3fb950' : '#f85149';
-      mcap-change.innerHTML = '<span style="color:' + color + '">24h ' + sign + Math.abs(p.capChg).toFixed(2) + '%</span>';
-    }
-    if (p.longPct != null) renderLS(p.longPct, p.shortPct);
-    if (p.tokens != null) renderTokens(p.tokens);
-    setStatus('ok', T().updated + ' (cached)');
-  } catch(e) { console.warn('Preloaded data error:', e); }
-}
 fetchAll();
 </script>
 </body>
