@@ -184,25 +184,113 @@ def build_news_html(items, today_str):
     return "\n".join(parts)
 
 
+# ── 抓取市場數據（預載解決瀏覽器 CoinGecko 限速問題）───────────
+def fetch_market_data():
+    import json
+    data = {}
+
+    try:
+        resp = requests.get("https://api.alternative.me/fng/?limit=1", timeout=10)
+        resp.raise_for_status()
+        data["fng"] = int(resp.json()["data"][0]["value"])
+        print(f"✅ FNG: {data['fng']}")
+    except Exception as e:
+        print(f"⚠️ FNG 失敗: {e}")
+    time.sleep(0.5)
+
+    try:
+        resp = requests.get("https://api.coingecko.com/api/v3/global", timeout=15)
+        resp.raise_for_status()
+        d = resp.json()["data"]
+        data["cap"] = d["total_market_cap"]["usd"]
+        data["capChg"] = d["market_cap_change_percentage_24h_usd"]
+        print(f"✅ Market Cap: ${data['cap']/1e12:.2f}T")
+    except Exception as e:
+        print(f"⚠️ Market Cap 失敗: {e}")
+    time.sleep(1)
+
+    try:
+        resp = requests.get(
+            "https://fapi.binance.com/futures/data/globalLongShortAccountRatio"
+            "?symbol=BTCUSDT&period=5m&limit=1", timeout=10)
+        resp.raise_for_status()
+        d = resp.json()[0]
+        data["longPct"]  = f"{float(d['longAccount']) * 100:.1f}"
+        data["shortPct"] = f"{float(d['shortAccount']) * 100:.1f}"
+        print(f"✅ L/S: {data['longPct']}% / {data['shortPct']}%")
+    except Exception as e:
+        print(f"⚠️ L/S 失敗: {e}")
+    time.sleep(1)
+
+    tokens = []
+    try:
+        resp = requests.get(
+            "https://api.coingecko.com/api/v3/coins/markets"
+            "?vs_currency=usd&ids=bitcoin,ethereum,solana"
+            "&order=market_cap_desc&per_page=3&sparkline=false", timeout=15)
+        resp.raise_for_status()
+        for c in resp.json():
+            tokens.append({"id": c["id"], "symbol": c["symbol"], "name": c["name"],
+                           "current_price": c["current_price"],
+                           "price_change_percentage_24h": c.get("price_change_percentage_24h", 0),
+                           "type": "fixed"})
+        print(f"✅ Fixed tokens: {[t['symbol'] for t in tokens]}")
+    except Exception as e:
+        print(f"⚠️ Fixed tokens 失敗: {e}")
+    time.sleep(1)
+
+    try:
+        resp = requests.get("https://api.coingecko.com/api/v3/search/trending", timeout=15)
+        resp.raise_for_status()
+        trend_ids = [c["item"]["id"] for c in resp.json()["coins"][:2]]
+        time.sleep(1)
+        resp2 = requests.get(
+            f"https://api.coingecko.com/api/v3/coins/markets"
+            f"?vs_currency=usd&ids={','.join(trend_ids)}&per_page=2&sparkline=false", timeout=15)
+        resp2.raise_for_status()
+        for c in resp2.json():
+            tokens.append({"id": c["id"], "symbol": c["symbol"], "name": c["name"],
+                           "current_price": c["current_price"],
+                           "price_change_percentage_24h": c.get("price_change_percentage_24h", 0),
+                           "type": "trending"})
+        print(f"✅ All tokens: {[t['symbol'] for t in tokens]}")
+    except Exception as e:
+        print(f"⚠️ Trending tokens 失敗: {e}")
+
+    if tokens:
+        data["tokens"] = tokens
+    return data
+
+
 # ── 更新 index.html ──────────────────────────────────────────────
-def update_html(news_html):
+def update_html(news_html, market_data):
+    import json
     with open("index.html", "r", encoding="utf-8") as f:
         content = f.read()
 
-    pattern = r'(<!-- NEWS_START -->).*?(<!-- NEWS_END -->)'
-    replacement = f'<!-- NEWS_START -->\n{news_html}\n        <!-- NEWS_END -->'
-    new_content, count = re.subn(pattern, replacement, content, flags=re.DOTALL)
+    if news_html:
+        pattern = r'(<!-- NEWS_START -->).*?(<!-- NEWS_END -->)'
+        replacement = f'<!-- NEWS_START -->\n{news_html}\n        <!-- NEWS_END -->'
+        content, count = re.subn(pattern, replacement, content, flags=re.DOTALL)
+        if count == 0:
+            print("⚠️ 找不到 NEWS 標記")
+        else:
+            print("✅ 新聞已更新")
 
-    if count == 0:
-        print("⚠️ 找不到 NEWS_START/NEWS_END 標記，index.html 未更新")
-        return False
+    if market_data:
+        preloaded = f"<script>window.PRELOADED = {json.dumps(market_data, ensure_ascii=False)};</script>"
+        content, count2 = re.subn(
+            r'<!-- MARKET_DATA_START -->.*?<!-- MARKET_DATA_END -->',
+            f'<!-- MARKET_DATA_START -->{preloaded}<!-- MARKET_DATA_END -->',
+            content, flags=re.DOTALL)
+        if count2 == 0:
+            print("⚠️ 找不到 MARKET_DATA 標記")
+        else:
+            print("✅ 市場數據已預載")
 
     with open("index.html", "w", encoding="utf-8") as f:
-        f.write(new_content)
-
-    now = datetime.now(TZ_TAIPEI).strftime("%Y-%m-%d %H:%M")
-    print(f"✅ index.html 已更新（{now} 台北時間）")
-    return True
+        f.write(content)
+    print(f"✅ index.html 完成（{datetime.now(TZ_TAIPEI).strftime('%Y-%m-%d %H:%M')} 台北時間）")
 
 
 # ── Main ─────────────────────────────────────────────────────────
@@ -211,15 +299,18 @@ if __name__ == "__main__":
     today_str = datetime.now(TZ_TAIPEI).strftime("%Y-%m-%d")
 
     news = fetch_news()
+    news_html = ""
     if not news:
-        print("ℹ️ 無新聞，index.html 保持不變")
+        print("ℹ️ 無新聞，保留舊內容")
     else:
-        print(f"📰 共 {len(news[:5])} 條新聞，開始翻譯...")
-        titles_en = [item["title"] for item in news[:5]]
-        titles_zh = translate_to_zh(titles_en)
+        print(f"📰 共 {len(news[:5])} 條，開始翻譯...")
+        titles_zh = translate_to_zh([item["title"] for item in news[:5]])
         for i, item in enumerate(news[:5]):
             item["title"] = titles_zh[i]
         news_html = build_news_html(news, today_str)
-        update_html(news_html)
 
+    print("\n📊 抓取市場數據...")
+    market_data = fetch_market_data()
+
+    update_html(news_html, market_data)
     print("🎉 完成！")
