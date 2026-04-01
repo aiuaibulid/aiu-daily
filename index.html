@@ -323,6 +323,7 @@
   <p style="margin-top:4px;color:#6e7681;" data-i18n="sources">即時數據：CoinGecko API · alternative.me API　|　新聞來源：BlockBeats　|　AIU Daily © 2026</p>
 </div>
 
+<!-- MARKET_DATA_START --><!-- MARKET_DATA_END -->
 <script>
 // ── i18n ─────────────────────────────────────────────────────
 const LANGS = {
@@ -936,7 +937,24 @@ async function fetchAll() {
 // ── Init ──────────────────────────────────────────────────────
 applyLang(currentLang);
 setStatus('loading', T().connecting);
+if (window.PRELOADED) {
+  try {
+    const p = window.PRELOADED;
+    if (p.fng != null) renderFng(p.fng);
+    if (p.cap != null) {
+      $('mcap-value').textContent = formatCap(p.cap);
+      const sign = p.capChg >= 0 ? '\u2191 +' : '\u2193 ';
+      const color = p.capChg >= 0 ? '#3fb950' : '#f85149';
+      $('mcap-change').innerHTML = `<span style="color:${color}">24h ${sign}${Math.abs(p.capChg).toFixed(2)}%</span>`;
+    }
+    if (p.longPct != null) renderLS(p.longPct, p.shortPct);
+    if (p.tokens != null) renderTokens(p.tokens);
+    setStatus('ok', T().updated + ' (cached)');
+  } catch(e) { console.warn('Preloaded data error:', e); }
+}
 fetchAll();
 </script>
 </body>
 </html>
+
+
