@@ -87,24 +87,56 @@ def fetch_news():
     return []
 
 
-# ── Google Translate（免費端點，逐條翻譯）───────────────────────
+# ── 翻譯（MyMemory 主力 + Google 備用）─────────────────────────
+def translate_one(title):
+    """MyMemory 優先（不封鎖機房 IP），Google Translate 備用。"""
+    # 主要：MyMemory API（免費、無需 key、機房 IP 可用）
+    try:
+        resp = requests.get(
+            "https://api.mymemory.translated.net/get",
+            params={"q": title, "langpair": "en|zh-CN"},
+            timeout=12,
+            headers={"User-Agent": "Mozilla/5.0 (compatible; AIUBot/1.0)"}
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        if data.get("responseStatus") == 200:
+            result = data["responseData"]["translatedText"]
+            if result and result.strip() and result.strip() != title:
+                return result.strip()
+    except Exception as e:
+        print(f"  ⚠️ MyMemory 失敗: {e}")
+
+    # 備用：Google Translate 非官方端點
+    try:
+        url = (
+            "https://translate.googleapis.com/translate_a/single"
+            f"?client=gtx&sl=en&tl=zh-CN&dt=t&q={quote(title)}"
+        )
+        resp = requests.get(url, timeout=10, headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        })
+        resp.raise_for_status()
+        data = resp.json()
+        result = "".join(part[0] for part in data[0] if part[0])
+        if result:
+            return result.strip()
+    except Exception as e:
+        print(f"  ⚠️ Google Translate 失敗: {e}")
+
+    return title  # 兩個都失敗則保留原文
+
+
 def translate_to_zh(titles):
     translated = []
-    for title in titles:
-        try:
-            url = (
-                "https://translate.googleapis.com/translate_a/single"
-                f"?client=gtx&sl=en&tl=zh-CN&dt=t&q={quote(title)}"
-            )
-            resp = requests.get(url, timeout=10)
-            resp.raise_for_status()
-            data = resp.json()
-            result = "".join(part[0] for part in data[0] if part[0])
-            translated.append(result.strip() if result.strip() else title)
-        except Exception as e:
-            print(f"⚠️ 翻譯失敗，保留原文: {e}")
-            translated.append(title)
-        time.sleep(0.5)
+    for i, title in enumerate(titles):
+        result = translate_one(title)
+        if result == title:
+            print(f"⚠️ 第{i+1}條保留原文（兩個翻譯源均失敗）")
+        else:
+            print(f"✅ 第{i+1}條已翻譯")
+        translated.append(result)
+        time.sleep(0.8)
     return translated
 
 
