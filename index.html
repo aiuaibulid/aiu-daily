@@ -566,6 +566,22 @@ function applyPreloaded() {
   if (p.longPct !== undefined) renderLS(p.longPct, p.shortPct);
 }
 
+async function fetchWithRetry(url, retries, baseDelay) {
+  retries = retries || 3;
+  baseDelay = baseDelay || 2000;
+  for (var i = 0; i < retries; i++) {
+    try {
+      var res = await fetch(url);
+      if (res.status !== 429) return res;
+      if (i < retries - 1) await new Promise(function(r) { setTimeout(r, baseDelay * (i + 1)); });
+    } catch(e) {
+      if (i === retries - 1) throw e;
+      await new Promise(function(r) { setTimeout(r, baseDelay); });
+    }
+  }
+  throw new Error('CoinGecko rate limited after ' + retries + ' retries');
+}
+
 async function fetchFNG() {
   const res  = await fetch('https://api.alternative.me/fng/?limit=1');
   const json = await res.json();
@@ -574,7 +590,7 @@ async function fetchFNG() {
 
 async function fetchGlobal() {
   if (window.PRELOADED?.cap !== undefined) return;
-  const res  = await fetch('https://api.coingecko.com/api/v3/global');
+  const res  = await fetchWithRetry('https://api.coingecko.com/api/v3/global');
   const json = await res.json();
   const cap  = json.data.total_market_cap.usd;
   const chg  = json.data.market_cap_change_percentage_24h_usd;
@@ -586,17 +602,19 @@ async function fetchGlobal() {
 
 async function fetchTokens() {
   if (window.PRELOADED?.tokens?.length) return;
-  const fixedRes = await fetch(
+  const fixedRes = await fetchWithRetry(
     'https://api.coingecko.com/api/v3/coins/markets' +
     '?vs_currency=usd&ids=bitcoin,ethereum,solana&order=market_cap_desc&per_page=3&sparkline=false'
   );
   const fixed = await fixedRes.json();
 
-  const trendRes  = await fetch('https://api.coingecko.com/api/v3/search/trending');
+  await new Promise(r => setTimeout(r, 1200));
+  const trendRes  = await fetchWithRetry('https://api.coingecko.com/api/v3/search/trending');
   const trendJson = await trendRes.json();
   const trendIds  = trendJson.coins.slice(0,2).map(c => c.item.id).join(',');
 
-  const trendPriceRes = await fetch(
+  await new Promise(r => setTimeout(r, 1200));
+  const trendPriceRes = await fetchWithRetry(
     `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${trendIds}&per_page=2&sparkline=false`
   );
   const trending = await trendPriceRes.json();
@@ -936,7 +954,10 @@ async function fetchAll() {
   updateDateHeader();
 
   const results = await Promise.allSettled([
-    fetchFNG(), fetchGlobal(), fetchTokens(), fetchLS(), fetchNews()
+    fetchFNG(),
+    new Promise(r => setTimeout(r, 1000)).then(() => fetchGlobal()),
+    new Promise(r => setTimeout(r, 2500)).then(() => fetchTokens()),
+    fetchLS(), fetchNews()
   ]);
 
   const failed = results.filter(r => r.status === 'rejected').length;
