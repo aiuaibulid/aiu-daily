@@ -468,15 +468,19 @@ function setLang(lang) { applyLang(lang); }
 
 // ── Helpers ───────────────────────────────────────────────────
 function formatPrice(n) {
-  if (n >= 1000) return '$' + n.toLocaleString('en-US', { maximumFractionDigits: 0 });
-  if (n >= 1)    return '$' + n.toFixed(2);
-  if (n >= 0.01) return '$' + n.toFixed(4);
-  return '$' + n.toFixed(6);
+  const num = Number(n);
+  if (!Number.isFinite(num)) return '--';
+  if (num >= 1000) return '$' + num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+  if (num >= 1)    return '$' + num.toFixed(2);
+  if (num >= 0.01) return '$' + num.toFixed(4);
+  return '$' + num.toFixed(6);
 }
 function formatCap(n) {
-  if (n >= 1e12) return '$' + (n/1e12).toFixed(2) + 'T';
-  if (n >= 1e9)  return '$' + (n/1e9).toFixed(1) + 'B';
-  return '$' + n.toLocaleString();
+  const num = Number(n);
+  if (!Number.isFinite(num)) return '--';
+  if (num >= 1e12) return '$' + (num/1e12).toFixed(2) + 'T';
+  if (num >= 1e9)  return '$' + (num/1e9).toFixed(1) + 'B';
+  return '$' + num.toLocaleString();
 }
 function fngStateLabel(v) {
   const states = T().fng_states;
@@ -530,9 +534,22 @@ function renderLS(longPct, shortPct) {
 }
 
 function renderTokens(allCoins) {
-  window._lastTokenData = allCoins;
-  $('tokens-grid').innerHTML = allCoins.map(coin => {
-    const chg = coin.price_change_percentage_24h;
+  const safeCoins = (Array.isArray(allCoins) ? allCoins : []).slice(0, 5).map((coin, idx) => ({
+    id: coin?.id || `coin-${idx}`,
+    symbol: String(coin?.symbol || 'n/a'),
+    name: coin?.name || 'Unknown',
+    current_price: Number.isFinite(Number(coin?.current_price)) ? Number(coin.current_price) : null,
+    price_change_percentage_24h: Number.isFinite(Number(coin?.price_change_percentage_24h))
+      ? Number(coin.price_change_percentage_24h)
+      : 0,
+    type: coin?.type === 'trending' ? 'trending' : 'fixed'
+  }));
+
+  window._lastTokenData = safeCoins;
+  if (!safeCoins.length) return;
+
+  $('tokens-grid').innerHTML = safeCoins.map(coin => {
+    const chg = Number(coin.price_change_percentage_24h || 0);
     const up  = chg >= 0;
     const cls = up ? 'up' : 'down';
     const sign = up ? '▲ +' : '▼ ';
@@ -554,16 +571,18 @@ function renderTokens(allCoins) {
 function applyPreloaded() {
   if (!window.PRELOADED) return;
   const p = window.PRELOADED;
-  if (p.fng !== undefined) renderFng(p.fng);
-  if (p.cap !== undefined) {
+  if (Number.isFinite(Number(p.fng))) renderFng(Number(p.fng));
+  if (Number.isFinite(Number(p.cap))) {
     $('mcap-value').textContent = formatCap(p.cap);
-    const chg = p.capChg || 0;
+    const chg = Number.isFinite(Number(p.capChg)) ? Number(p.capChg) : 0;
     const sign  = chg >= 0 ? '\u25b2 +' : '\u25bc ';
     const color = chg >= 0 ? '#3fb950' : '#f85149';
     $('mcap-change').innerHTML = '<span style="color:' + color + '">24h ' + sign + Math.abs(chg).toFixed(2) + '%</span>';
   }
-  if (p.tokens && p.tokens.length) renderTokens(p.tokens);
-  if (p.longPct !== undefined) renderLS(p.longPct, p.shortPct);
+  if (Array.isArray(p.tokens) && p.tokens.length) renderTokens(p.tokens);
+  if (Number.isFinite(Number(p.longPct)) && Number.isFinite(Number(p.shortPct))) {
+    renderLS(Number(p.longPct), Number(p.shortPct));
+  }
 }
 
 async function fetchWithRetry(url, retries, baseDelay) {
