@@ -180,6 +180,7 @@
       .lang-switcher { top:auto; bottom:12px; right:50%; transform:translateX(50%); }
     }
   </style>
+<!-- MARKET_DATA_START --><!-- MARKET_DATA_END -->
 </head>
 <body>
 
@@ -557,6 +558,7 @@ async function fetchFNG() {
 }
 
 async function fetchGlobal() {
+  if (window.PRELOADED?.cap !== undefined) return;
   const res  = await fetch('https://api.coingecko.com/api/v3/global');
   const json = await res.json();
   const cap  = json.data.total_market_cap.usd;
@@ -568,6 +570,7 @@ async function fetchGlobal() {
 }
 
 async function fetchTokens() {
+  if (window.PRELOADED?.tokens?.length) return;
   const fixedRes = await fetch(
     'https://api.coingecko.com/api/v3/coins/markets' +
     '?vs_currency=usd&ids=bitcoin,ethereum,solana&order=market_cap_desc&per_page=3&sparkline=false'
@@ -935,6 +938,7 @@ async function fetchAll() {
 
 // ── Init ──────────────────────────────────────────────────────
 applyLang(currentLang);
+applyPreloaded();
 setStatus('loading', T().connecting);
 fetchAll();
 </script>
