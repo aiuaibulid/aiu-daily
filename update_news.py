@@ -10,6 +10,7 @@ import time
 import xml.etree.ElementTree as ET
 import requests
 from datetime import datetime, timezone, timedelta
+from email.utils import parsedate_to_datetime
 from urllib.parse import quote
 
 TZ_TAIPEI = timezone(timedelta(hours=8))
@@ -21,6 +22,31 @@ RSS_SOURCES = [
     ("https://www.coindesk.com/arc/outboundfeeds/rss/",  "CoinDesk"),
 ]
 
+def parse_pub_datetime(raw):
+    if not raw:
+        return None
+
+    text = raw.strip()
+
+    # RFC-822 (most RSS feeds)
+    try:
+        dt = parsedate_to_datetime(text)
+        if dt:
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt.astimezone(timezone.utc)
+    except Exception:
+        pass
+
+    # ISO-8601 (many Atom feeds)
+    try:
+        dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+    except Exception:
+        return None
+
 def fetch_rss(url, source_name):
     try:
         resp = requests.get(url, timeout=15, headers={
@@ -29,16 +55,26 @@ def fetch_rss(url, source_name):
         resp.raise_for_status()
         root = ET.fromstring(resp.text)
 
-        ns = {"atom": "http://www.w3.org/2005/Atom"}
+        ns = {
+            "atom": "http://www.w3.org/2005/Atom",
+            "dc": "http://purl.org/dc/elements/1.1/",
+        }
         items = root.findall(".//item") or root.findall(".//atom:entry", ns)
 
         results = []
         cutoff = datetime.now(timezone.utc) - timedelta(hours=36)
 
         for item in items[:20]:
-            title_el = item.find("title")
-            link_el  = item.find("link")
-            date_el  = item.find("pubDate") or item.find("published")
+            title_el = item.find("title") or item.find("atom:title", ns)
+            link_el  = item.find("link") or item.find("atom:link", ns)
+            date_el  = (
+                item.find("pubDate")
+                or item.find("published")
+                or item.find("updated")
+                or item.find("atom:published", ns)
+                or item.find("atom:updated", ns)
+                or item.find("dc:date", ns)
+            )
 
             if title_el is None:
                 continue
@@ -50,24 +86,20 @@ def fetch_rss(url, source_name):
             if link_el is not None:
                 link = (link_el.text or link_el.get("href") or "").strip()
 
-            time_str = ""
-            if date_el is not None and date_el.text:
-                try:
-                    from email.utils import parsedate_to_datetime
-                    pub_time = parsedate_to_datetime(date_el.text.strip())
-                    if pub_time.replace(tzinfo=timezone.utc) < cutoff:
-                        continue
-                    time_str = pub_time.astimezone(TZ_TAIPEI).strftime("%H:%M")
-                except Exception:
-                    pass
+            pub_time = parse_pub_datetime(date_el.text if date_el is not None else "")
+            if pub_time and pub_time < cutoff:
+                continue
+            time_str = pub_time.astimezone(TZ_TAIPEI).strftime("%H:%M") if pub_time else ""
 
             results.append({
                 "title": title,
                 "url": link,
                 "time": time_str,
-                "source": source_name
+                "source": source_name,
+                "published_at": pub_time.isoformat() if pub_time else "",
             })
 
+        results.sort(key=lambda x: x.get("published_at", ""), reverse=True)
         print(f"✅ {source_name}: 抓到 {len(results)} 條")
         return results[:8]
 
@@ -77,10 +109,22 @@ def fetch_rss(url, source_name):
 
 
 def fetch_news():
+    merged = []
+    seen = set()
+
     for url, name in RSS_SOURCES:
         items = fetch_rss(url, name)
-        if items:
-            return items
+        for item in items:
+            dedupe_key = (item.get("url") or item.get("title") or "").strip().lower()
+            if not dedupe_key or dedupe_key in seen:
+                continue
+            seen.add(dedupe_key)
+            merged.append(item)
+
+    if merged:
+        merged.sort(key=lambda x: x.get("published_at", ""), reverse=True)
+        return merged[:8]
+
     print("❌ 所有來源均失敗，保留舊新聞")
     return []
 
