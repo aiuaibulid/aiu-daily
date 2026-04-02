@@ -62,7 +62,7 @@ def fetch_rss(url, source_name):
         items = root.findall(".//item") or root.findall(".//atom:entry", ns)
 
         results = []
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=36)
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=24)
 
         for item in items[:20]:
             title_el = item.find("title") or item.find("atom:title", ns)
