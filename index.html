@@ -551,6 +551,21 @@ function renderTokens(allCoins) {
 }
 
 // ── API Fetches ───────────────────────────────────────────────
+function applyPreloaded() {
+  if (!window.PRELOADED) return;
+  const p = window.PRELOADED;
+  if (p.fng !== undefined) renderFng(p.fng);
+  if (p.cap !== undefined) {
+    $('mcap-value').textContent = formatCap(p.cap);
+    const chg = p.capChg || 0;
+    const sign  = chg >= 0 ? '\u25b2 +' : '\u25bc ';
+    const color = chg >= 0 ? '#3fb950' : '#f85149';
+    $('mcap-change').innerHTML = '<span style="color:' + color + '">24h ' + sign + Math.abs(chg).toFixed(2) + '%</span>';
+  }
+  if (p.tokens && p.tokens.length) renderTokens(p.tokens);
+  if (p.longPct !== undefined) renderLS(p.longPct, p.shortPct);
+}
+
 async function fetchFNG() {
   const res  = await fetch('https://api.alternative.me/fng/?limit=1');
   const json = await res.json();
