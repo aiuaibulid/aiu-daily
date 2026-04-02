@@ -707,65 +707,26 @@ async function translateBatch(titles, targetLang) {
 // ── Render News Cards ─────────────────────────────────────────
 function renderNewsCards(items) {
   if (!items?.length) return;
-  const now = new Date().toISOString().slice(0,10);
-  $('news-list').innerHTML =
-    '<!-- NEWS_START -->
-        <a class="news-card" href="https://cointelegraph.com/news/elon-musks-spacex-files-confidential-ipo-with-sec?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">01</div>
-            <div class="news-body">
-                <div class="news-title">埃隆·马斯克的SpaceX悄悄申请IPO ，寻求庞然大物首次亮相</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/elon-musks-spacex-files-confidential-ipo-with-sec?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/crypto-exchange-bithumb-delay-ipo?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">02</div>
-            <div class="news-body">
-                <div class="news-title">加密货币交易所Bithumb将推迟IPO至2028年后：报告</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/crypto-exchange-bithumb-delay-ipo?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/us-treasury-state-stablecoin-regulation?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">03</div>
-            <div class="news-body">
-                <div class="news-title">美国财政部为州级稳定币法规寻求公众意见</div>
-                <div class="news-footer">
-                    <span class="tag">#稳定币</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/us-treasury-state-stablecoin-regulation?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/hyperliquid-whale-makes-dollar80m-bet-on-market-crash-is-bitcoin-in-trouble?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">04</div>
-            <div class="news-body">
-                <div class="news-title">Hyperliquid whale对市场崩盘押注$ 8000万：比特币陷入困境了吗？</div>
-                <div class="news-footer">
-                    <span class="tag">#巨鲸</span><span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/hyperliquid-whale-makes-dollar80m-bet-on-market-crash-is-bitcoin-in-trouble?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/citadel-backed-edx-national-trust-bank-charter?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">05</div>
-            <div class="news-body">
-                <div class="news-title">EDX寻求OCC信托银行章程进行机构加密托管</div>
-                <div class="news-footer">
-                    <span class="tag">#机构</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/citadel-backed-edx-national-trust-bank-charter?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <!-- NEWS_END -->';
+  const cards = items.slice(0, 5).map((item, i) => {
+    const title = String(item.title || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const url = String(item.url || '#').replace(/"/g, '%22');
+    const time = item.time || new Date().toISOString().slice(0, 10);
+    const source = item.source || 'Source';
+    const tags = extractTags(title).map(t => `<span class="tag">${t}</span>`).join('');
+    return `
+      <a class="news-card" href="${url}" target="_blank">
+        <div class="news-index">${String(i + 1).padStart(2, '0')}</div>
+        <div class="news-body">
+          <div class="news-title">${title}</div>
+          <div class="news-footer">
+            ${tags}
+            <a class="news-link" href="${url}" target="_blank" data-i18n="read_more">${T().read_more}</a>
+            <span class="news-time">${time} · ${source}</span>
+          </div>
+        </div>
+      </a>`;
+  }).join('');
+  $('news-list').innerHTML = cards;
 }
 
 // ── Translate + Render ────────────────────────────────────────
@@ -801,63 +762,7 @@ async function translateAndRender(rawItems, lang) {
 async function fetchNews() {
   // 顯示骨架載入
   $('news-list').innerHTML =
-    '<!-- NEWS_START -->
-        <a class="news-card" href="https://cointelegraph.com/news/elon-musks-spacex-files-confidential-ipo-with-sec?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">01</div>
-            <div class="news-body">
-                <div class="news-title">埃隆·马斯克的SpaceX悄悄申请IPO ，寻求庞然大物首次亮相</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/elon-musks-spacex-files-confidential-ipo-with-sec?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/crypto-exchange-bithumb-delay-ipo?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">02</div>
-            <div class="news-body">
-                <div class="news-title">加密货币交易所Bithumb将推迟IPO至2028年后：报告</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/crypto-exchange-bithumb-delay-ipo?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/us-treasury-state-stablecoin-regulation?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">03</div>
-            <div class="news-body">
-                <div class="news-title">美国财政部为州级稳定币法规寻求公众意见</div>
-                <div class="news-footer">
-                    <span class="tag">#稳定币</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/us-treasury-state-stablecoin-regulation?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/hyperliquid-whale-makes-dollar80m-bet-on-market-crash-is-bitcoin-in-trouble?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">04</div>
-            <div class="news-body">
-                <div class="news-title">Hyperliquid whale对市场崩盘押注$ 8000万：比特币陷入困境了吗？</div>
-                <div class="news-footer">
-                    <span class="tag">#巨鲸</span><span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/hyperliquid-whale-makes-dollar80m-bet-on-market-crash-is-bitcoin-in-trouble?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/citadel-backed-edx-national-trust-bank-charter?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">05</div>
-            <div class="news-body">
-                <div class="news-title">EDX寻求OCC信托银行章程进行机构加密托管</div>
-                <div class="news-footer">
-                    <span class="tag">#机构</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/citadel-backed-edx-national-trust-bank-charter?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <!-- NEWS_END -->';
+    '<div class="news-card"><div class="news-body"><div class="news-title">Loading news...</div></div></div>';
 
   for (const src of NEWS_SOURCES) {
     try {
@@ -888,63 +793,7 @@ async function fetchNews() {
   const notice = document.createElement('div');
   notice.style.cssText = 'padding:10px 16px;color:#f0883e;font-size:12px;';
   notice.textContent = T().news_fail;
-  $('news-list').innerHTML = '<!-- NEWS_START -->
-        <a class="news-card" href="https://cointelegraph.com/news/elon-musks-spacex-files-confidential-ipo-with-sec?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">01</div>
-            <div class="news-body">
-                <div class="news-title">埃隆·马斯克的SpaceX悄悄申请IPO ，寻求庞然大物首次亮相</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/elon-musks-spacex-files-confidential-ipo-with-sec?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/crypto-exchange-bithumb-delay-ipo?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">02</div>
-            <div class="news-body">
-                <div class="news-title">加密货币交易所Bithumb将推迟IPO至2028年后：报告</div>
-                <div class="news-footer">
-                    
-                    <a class="news-link" href="https://cointelegraph.com/news/crypto-exchange-bithumb-delay-ipo?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/us-treasury-state-stablecoin-regulation?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">03</div>
-            <div class="news-body">
-                <div class="news-title">美国财政部为州级稳定币法规寻求公众意见</div>
-                <div class="news-footer">
-                    <span class="tag">#稳定币</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/us-treasury-state-stablecoin-regulation?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/hyperliquid-whale-makes-dollar80m-bet-on-market-crash-is-bitcoin-in-trouble?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">04</div>
-            <div class="news-body">
-                <div class="news-title">Hyperliquid whale对市场崩盘押注$ 8000万：比特币陷入困境了吗？</div>
-                <div class="news-footer">
-                    <span class="tag">#巨鲸</span><span class="tag">#BTC</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/hyperliquid-whale-makes-dollar80m-bet-on-market-crash-is-bitcoin-in-trouble?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <a class="news-card" href="https://cointelegraph.com/news/citadel-backed-edx-national-trust-bank-charter?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">
-            <div class="news-index">05</div>
-            <div class="news-body">
-                <div class="news-title">EDX寻求OCC信托银行章程进行机构加密托管</div>
-                <div class="news-footer">
-                    <span class="tag">#机构</span>
-                    <a class="news-link" href="https://cointelegraph.com/news/citadel-backed-edx-national-trust-bank-charter?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank" data-i18n="read_more">查看原文 →</a>
-                    <span class="news-time">2026-04-02 · CoinTelegraph</span>
-                </div>
-            </div>
-        </a>
-        <!-- NEWS_END -->';
+  $('news-list').innerHTML = '<div class="news-card"><div class="news-body"><div class="news-title">No live news available now.</div></div></div>';
   $('news-list').prepend(notice);
   setTimeout(() => notice.remove(), 5000);
 }
