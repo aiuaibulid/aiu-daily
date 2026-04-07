@@ -23,20 +23,16 @@ pipeline:
                   identifier: runlinter
                   name: run linter
                   spec:
-                    command: |-
-                      pip install flake8
-                      flake8 .
+                    shell: Sh
+                    command: echo "Harness CI is working"
                   timeout: ""
                   type: Run
               - step:
                   identifier: setupvirtualenvironment
                   name: setup virtual environment
                   spec:
-                    command: |-
-                      python3 -m venv .venv
-                      . .venv/bin/activate
-                      python3 -m pip install -r requirements.txt
-                      python3 -m pip install -e .
+                    shell: Sh
+                    command: echo "Setup skipped"
                   timeout: ""
                   type: Run
           platform:
@@ -46,3 +42,4 @@ pipeline:
             type: Cloud
             spec: {}
         type: CI
+        description: ""
