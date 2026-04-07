@@ -1,0 +1,14 @@
+inputSet:
+  name: Build_aiuaibulid_aiu_daily_1775566352299-pr-trigger-input-set
+  identifier: Build_aiuaibulid_aiu_daily_1775566352299prtriggerinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: Build_aiuaibulid_aiu_daily_1775566352299
+    properties:
+      ci:
+        codebase:
+          build:
+            type: PR
+            spec:
+              number: <+trigger.prNumber>
