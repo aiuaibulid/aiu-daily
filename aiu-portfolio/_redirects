@@ -1,0 +1,9 @@
+/en /index.html 200
+/zh /indexZH.html 200
+/guide /guide-en.html 200
+/guide/en /guide-en.html 200
+/guide/zh /guide.html 200
+/harness /harness-en.html 200
+/harness/en /harness-en.html 200
+/harness/zh /harness.html 200
+/harness/pdf /harness.pdf 302

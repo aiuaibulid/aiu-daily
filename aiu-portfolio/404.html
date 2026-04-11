@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 | AIU</title>
+  <meta name="description" content="AIU custom 404 page for Cloudflare Pages deployment.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f9f2e0;
+      --bg-2: #edf4fb;
+      --panel: rgba(255,255,255,0.78);
+      --text: #184d8d;
+      --muted: rgba(24,77,141,0.72);
+      --line: rgba(22,96,171,0.16);
+      --accent: #1660ab;
+      --accent-soft: #cfe88d;
+      --shadow: 0 28px 70px rgba(22,96,171,0.12);
+      --display: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      --sans: "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 14% 16%, rgba(255,255,255,0.78), transparent 20%),
+        radial-gradient(circle at 84% 18%, rgba(22,96,171,0.13), transparent 28%),
+        radial-gradient(circle at 50% 120%, rgba(255,255,255,0.30), transparent 35%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(760px, 100%);
+      padding: 36px 30px;
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      background: linear-gradient(135deg, var(--panel), rgba(255,255,255,0.52));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: rgba(255,255,255,0.16);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-family: var(--display);
+      font-size: clamp(44px, 9vw, 86px);
+      line-height: .94;
+      letter-spacing: -.05em;
+    }
+
+    p {
+      margin: 0;
+      max-width: 56ch;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent);
+      text-decoration: none;
+      background: rgba(255,255,255,0.72);
+      box-shadow: 0 12px 28px rgba(22,96,171,0.08);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .meta {
+      margin-top: 26px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="eyebrow">404 / Page Not Found</div>
+    <h1>找不到頁面</h1>
+    <p>
+      這個連結不存在，或是路徑已經更新。You can jump back to the main portfolio,
+      the guide library, or the Harness documentation from here.
+    </p>
+
+    <div class="grid">
+      <a class="button" href="./indexZH.html">中文首頁</a>
+      <a class="button" href="./index.html">English Home</a>
+      <a class="button" href="./guide.html">教學頁</a>
+      <a class="button" href="./harness.html">Harness 文檔</a>
+    </div>
+
+    <div class="meta">AIU / Cloudflare Pages fallback page</div>
+  </main>
+</body>
+</html>
