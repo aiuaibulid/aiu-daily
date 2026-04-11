@@ -13,10 +13,16 @@
 /guide.html
   Cache-Control: public, max-age=0, must-revalidate
 
+/guideZH.html
+  Cache-Control: public, max-age=0, must-revalidate
+
 /guide-en.html
   Cache-Control: public, max-age=0, must-revalidate
 
 /harness.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/harnessZH.html
   Cache-Control: public, max-age=0, must-revalidate
 
 /harness-en.html

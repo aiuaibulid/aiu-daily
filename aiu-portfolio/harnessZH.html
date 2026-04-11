@@ -1,15 +1,15 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Harness | AIU</title>
-  <meta name="description" content="Harness Engineering document page for Prompt, Context, Harness design, and agent workflow practice.">
+  <meta name="description" content="Harness Engineering 文檔頁，整理 Prompt、Context、Harness 與 Agent 協作的實務方法。">
   <meta property="og:title" content="Harness | AIU">
-  <meta property="og:description" content="Read the Harness Engineering overview and embedded PDF in English.">
+  <meta property="og:description" content="閱讀 Harness Engineering 方法頁與 PDF，掌握 AI 協作流程。">
   <meta property="og:type" content="website">
-  <link rel="alternate" hreflang="en" href="./harness-en.html">
   <link rel="alternate" hreflang="zh-Hant" href="./harnessZH.html">
+  <link rel="alternate" hreflang="en" href="./harness-en.html">
   <style>
     :root {
       color-scheme: light;
@@ -27,7 +27,7 @@
       --accent-3: #dce9f7;
       --shadow: 0 28px 70px rgba(22,96,171,0.12);
       --display: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-      --sans: "Inter", "Segoe UI", Arial, sans-serif;
+      --sans: "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
     }
 
     body[data-theme="dark"] {
@@ -280,11 +280,15 @@
 
     .lead {
       margin-top: 16px;
-      max-width: 12ch;
+      max-width: none;
       font-family: var(--display);
       font-size: clamp(34px, 4vw, 56px);
       line-height: 1.02;
       letter-spacing: -.05em;
+    }
+
+    .lead-line {
+      display: block;
     }
 
     .summary {
@@ -494,6 +498,13 @@
         min-height: 640px;
       }
     }
+
+    @media (min-width: 640px) {
+      .lead-line {
+        white-space: nowrap;
+      }
+    }
+
   </style>
 </head>
 <body data-theme="light">
@@ -507,12 +518,12 @@
         </div>
       </div>
       <div class="top-actions">
-        <a class="pill" href="./index.html"><span class="mini-dot">AI</span>Home</a>
-        <a class="pill" href="./guide-en.html"><span class="mini-dot">01</span>Guide</a>
-        <a class="pill" href="./harnessZH.html"><span class="mini-dot">中</span>中文版</a>
-        <a class="pill" href="./harness.pdf" target="_blank" rel="noreferrer"><span class="mini-dot">PDF</span>Open PDF</a>
-        <button class="toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
-          <span id="themeText">Light</span>
+        <a class="pill" href="./indexZH.html"><span class="mini-dot">AI</span>首頁</a>
+        <a class="pill" href="./guideZH.html"><span class="mini-dot">01</span>教學頁</a>
+        <a class="pill" href="./harness-en.html"><span class="mini-dot">EN</span>English</a>
+        <a class="pill" href="./harness.pdf" target="_blank" rel="noreferrer"><span class="mini-dot">PDF</span>開啟 PDF</a>
+        <button class="toggle" id="themeToggle" type="button" aria-label="切換明暗模式">
+          <span id="themeText">淺色</span>
           <span class="toggle-dot" id="themeIcon">☼</span>
         </button>
       </div>
@@ -522,15 +533,14 @@
       <div>
         <div class="eyebrow">Harness Engineering / 2026-04-10</div>
         <h1>Harness</h1>
-        <p class="lead">Turn prompts, context, workflow, and validation into a repeatable AI collaboration system.</p>
+        <p class="lead"><span class="lead-line">把提示、上下文</span><span class="lead-line">、流程與驗證串成</span><span class="lead-line">可反覆執行的 AI 協作系統。</span></p>
         <p class="summary">
-          This page is an English guide layer for Harness Engineering. It frames the relationship between
-          Prompt, Context, Harness, agent collaboration, Git, and linting so readers can grasp the method
-          before or alongside the full PDF.
+          這份頁面是 Harness Engineering 的導讀版本，整理 Prompt、Context、Harness、
+          Agent 協作、Git 與 Linter 的關係，讓你在閱讀 PDF 前先抓到核心脈絡，也能直接在頁內切換明暗模式。
         </p>
         <div class="actions">
-          <a class="cta primary" href="#document">Read the document</a>
-          <a class="cta" href="./harness.pdf" target="_blank" rel="noreferrer">Download PDF</a>
+          <a class="cta primary" href="#document">閱讀文檔</a>
+          <a class="cta" href="./harness.pdf" target="_blank" rel="noreferrer">下載 PDF</a>
         </div>
         <div class="meta">
           <span>Prompt</span>
@@ -546,8 +556,7 @@
           <div class="label">Focus</div>
           <h2>Prompt Context Harness</h2>
           <p>
-            The core idea is not a single instruction. It is a stable input system that keeps goals,
-            constraints, background, and execution style aligned across repeated AI interactions.
+            核心不是單次下指令，而是替 AI 建立穩定的輸入框架，讓需求、背景、目標與限制在每次互動中都能維持一致。
           </p>
           <div class="chips">
             <span>Prompt Design</span>
@@ -560,8 +569,7 @@
           <div class="label">Workflow</div>
           <h3>Agent / Git / Linter</h3>
           <p>
-            The document also emphasizes execution rhythm: let the agent produce, manage change through Git,
-            and tighten quality through linting and review loops.
+            文件也強調執行層的節奏: 讓 Agent 產出、用 Git 管理變更，再由 Linter 與檢查流程收斂品質。
           </p>
         </article>
       </div>
@@ -571,10 +579,9 @@
       <div class="section-head">
         <div class="label">01 / Snapshot</div>
         <div>
-          <h2>A fast overview of what this method document is doing.</h2>
+          <h2>先快速掌握這份方法文檔的主軸。</h2>
           <p>
-            If you have not opened the PDF yet, start here to understand the big picture and why this framework
-            is useful for AI collaboration, prompt engineering, and production-oriented delivery.
+            如果你還沒打開 PDF，可以先從這裡理解它在談什麼，以及它為什麼適合用來規範 AI 協作、提示工程與交付節奏。
           </p>
         </div>
       </div>
@@ -584,17 +591,15 @@
           <div class="label">Core Frame</div>
           <h3>Prompt / Context / Harness</h3>
           <p>
-            These are not isolated ideas. They form a single input architecture: Prompt gives direction,
-            Context provides background, and Harness keeps both structured and reusable.
+            三者不是分散的概念，而是一個輸入系統: Prompt 負責指令，Context 提供背景，Harness 負責把它們穩定包起來。
           </p>
         </article>
 
         <article class="card">
           <div class="label">Execution</div>
-          <h3>Agent Collaboration Flow</h3>
+          <h3>Agent 協作流程</h3>
           <p>
-            In practice, an agent is not just answering questions. It is placed inside a chain that can be
-            tracked, corrected, validated, and pushed forward with clear checkpoints.
+            實際執行時，Agent 不只是回答問題，而是被放進一個可以追蹤、修正、驗證與逐步推進的工作鏈。
           </p>
         </article>
 
@@ -602,8 +607,7 @@
           <div class="label">Tooling</div>
           <h3>Git / Linter / Model Stack</h3>
           <p>
-            The tooling layer brings outputs back into an engineering rhythm so model responses become part
-            of a real delivery process instead of staying as one-off experiments.
+            工具層負責把產出拉回工程節奏，避免只停留在靈感式互動，讓模型輸出能真正進入交付流程。
           </p>
         </article>
       </div>
@@ -613,10 +617,9 @@
       <div class="section-head">
         <div class="label">02 / Reading Path</div>
         <div>
-          <h2>A suggested order for absorbing the material quickly.</h2>
+          <h2>建議的閱讀順序，幫你更快吸收重點。</h2>
           <p>
-            This document works best when read from concept to workflow to application. That sequence makes it
-            easier to translate abstract method into an actual working practice for your own projects.
+            這份材料適合先看概念，再看流程，最後再對照自己的專案情境。這樣比較容易把抽象方法轉成可執行的工作方式。
           </p>
         </div>
       </div>
@@ -624,22 +627,22 @@
       <div class="grid-2">
         <article class="card">
           <div class="label">Suggested Flow</div>
-          <h3>Reading Path</h3>
+          <h3>閱讀路徑</h3>
           <ol>
-            <li>Start with how Harness wraps Prompt and Context.</li>
-            <li>Then review where Agent, Git, and Linter sit in the process.</li>
-            <li>Finally map the method back onto your own project workflow.</li>
+            <li>先理解 Harness 如何包住 Prompt 與 Context。</li>
+            <li>再看 Agent、Git、Linter 在流程中的位置。</li>
+            <li>最後對照自己的專案，思考哪些步驟可以標準化。</li>
           </ol>
         </article>
 
         <article class="card">
           <div class="label">Use Cases</div>
-          <h3>Where It Fits</h3>
+          <h3>適用情境</h3>
           <ul>
-            <li>Building team conventions for AI collaboration.</li>
-            <li>Creating onboarding and teaching material.</li>
-            <li>Turning experimental prompts into stable process.</li>
-            <li>Giving content, design, or engineering work a consistent operating rhythm.</li>
+            <li>建立 AI 團隊協作規範。</li>
+            <li>整理 onboarding 與教學材料。</li>
+            <li>把實驗性提示轉成穩定流程。</li>
+            <li>為內容、設計或工程產出建立一致節奏。</li>
           </ul>
         </article>
       </div>
@@ -649,10 +652,9 @@
       <div class="section-head">
         <div class="label">03 / Document</div>
         <div>
-          <h2>Read the PDF directly inside the page.</h2>
+          <h2>直接在頁面內閱讀 PDF。</h2>
           <p>
-            The original PDF is embedded below. Use this page to understand the framework first, then continue
-            reading here or open the PDF separately for a full pass.
+            下面嵌入的是原始 PDF。你可以先用這個頁面快速掌握框架，再往下或另開 PDF 做完整閱讀。
           </p>
         </div>
       </div>
@@ -666,7 +668,7 @@
 
     <footer class="footer">
       <div>AIU / Harness Page</div>
-      <div>English Page / Dark Mode / Embedded PDF / Bilingual Navigation</div>
+      <div>中文頁面 / 深色模式 / 內嵌 PDF / 雙語導覽</div>
     </footer>
   </div>
 
@@ -683,7 +685,7 @@
       function setTheme(theme) {
         const isDark = theme === "dark";
         body.dataset.theme = theme;
-        themeText.textContent = isDark ? "Dark" : "Light";
+        themeText.textContent = isDark ? "深色" : "淺色";
         themeIcon.textContent = isDark ? "☾" : "☼";
         localStorage.setItem(key, theme);
       }

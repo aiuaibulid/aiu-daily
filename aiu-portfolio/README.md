@@ -7,9 +7,11 @@ This folder is a static site for Cloudflare Pages.
 - `index.html`: English home page
 - `indexZH.html`: Traditional Chinese home page
 - `guide-en.html`: English guide library
-- `guide.html`: Traditional Chinese guide library
+- `guide.html`: legacy Traditional Chinese guide page
+- `guideZH.html`: Traditional Chinese guide library
 - `harness-en.html`: English Harness document page
-- `harness.html`: Traditional Chinese Harness document page
+- `harness.html`: legacy Traditional Chinese Harness page
+- `harnessZH.html`: Traditional Chinese Harness document page
 - `harness.pdf`: Embedded and downloadable PDF
 - `_redirects`: pretty route aliases for Pages
 - `_headers`: security and cache headers for Pages
@@ -41,10 +43,12 @@ This keeps unrelated file changes from triggering a new portfolio deployment.
 
 - `/en` -> English home
 - `/zh` -> Chinese home
-- `/guide` -> English guide library
+- `/guide` -> Traditional Chinese guide library
 - `/guide/zh` -> Chinese guide library
-- `/harness` -> English Harness page
+- `/guideZH` -> Traditional Chinese guide library
+- `/harness` -> Traditional Chinese Harness page
 - `/harness/zh` -> Chinese Harness page
+- `/harnessZH` -> Traditional Chinese Harness page
 - `/harness/pdf` -> PDF
 
 ## Notes before production

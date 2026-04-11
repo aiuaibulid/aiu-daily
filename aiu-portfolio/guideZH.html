@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AIU | Guide Library</title>
-  <meta name="description" content="AIU guide library for teaching pages, PDFs, and method documents.">
-  <meta property="og:title" content="AIU | Guide Library">
-  <meta property="og:description" content="A clean entry point to AIU teaching pages, PDFs, and working methods.">
+  <title>AIU | 教學文檔庫</title>
+  <meta name="description" content="AIU 教學文檔庫，整理教學頁、PDF 與方法文檔，作為統一入口。">
+  <meta property="og:title" content="AIU | 教學文檔庫">
+  <meta property="og:description" content="從這裡進入 AIU 的教學頁、PDF 與方法文檔。">
   <meta property="og:type" content="website">
   <link rel="alternate" hreflang="en" href="./guide-en.html">
   <link rel="alternate" hreflang="zh-Hant" href="./guideZH.html">
@@ -27,7 +27,7 @@
       --accent-3: #dce9f7;
       --shadow: 0 28px 70px rgba(22, 96, 171, 0.12);
       --display: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-      --sans: "Inter", "Segoe UI", Arial, sans-serif;
+      --sans: "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
     }
 
     body[data-theme="dark"] {
@@ -228,11 +228,15 @@
 
     h1 {
       margin-top: 14px;
-      max-width: 12ch;
+      max-width: none;
       font-family: var(--display);
       font-size: clamp(46px, 6vw, 74px);
       line-height: .96;
       letter-spacing: -.05em;
+    }
+
+    .title-line {
+      display: block;
     }
 
     .intro {
@@ -269,7 +273,7 @@
       margin: 16px 0 0;
       color: var(--muted);
       font-size: 15px;
-      max-width: 34ch;
+      max-width: 32ch;
     }
 
     .card-actions {
@@ -330,40 +334,46 @@
       .card { min-height: auto; }
       .card-actions { flex-direction: column; }
     }
+
+    @media (min-width: 640px) {
+      .title-line {
+        white-space: nowrap;
+      }
+    }
   </style>
 </head>
 <body data-theme="light">
   <div class="shell">
     <header class="topbar">
-      <div class="breadcrumb">01 / Guide Library</div>
-      <nav class="nav" aria-label="Page actions">
-        <a class="button" href="./index.html">Home</a>
-        <a class="button" href="./guideZH.html">中文教學</a>
-        <button class="toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
-          <span id="themeText">Light</span>
+      <div class="breadcrumb">01 / 教學文檔庫</div>
+      <nav class="nav" aria-label="頁面操作">
+        <a class="button" href="./indexZH.html">返回首頁</a>
+        <a class="button" href="./guide-en.html">English Guide</a>
+        <button class="toggle" id="themeToggle" type="button" aria-label="切換明暗模式">
+          <span id="themeText">淺色</span>
           <span class="toggle-dot" id="themeIcon">☼</span>
         </button>
       </nav>
     </header>
 
     <main class="library">
-      <div class="section-kicker">01 / Guide Library</div>
-      <h1>A clean entry point for teaching pages, PDFs, and working methods.</h1>
+      <div class="section-kicker">01 / 教學文檔庫</div>
+      <h1><span class="title-line">把教學頁、PDF 與</span><span class="title-line">方法文檔整理成統一入口。</span></h1>
       <p class="intro">
-        This is the AIU guide index. Use it to organize teaching pages, PDFs, and method documents in one place.
-        Right now it starts with Harness Engineering, and future entries can simply be added as new cards in this section.
+        這裡是 AIU 的教學文檔索引頁，用來集中整理教學頁、PDF 與方法說明。
+        目前收錄的是 Harness Engineering，之後新增文件時直接把卡片加在這個區塊即可。
       </p>
 
-      <section class="grid" aria-label="Document cards">
+      <section class="grid" aria-label="文檔卡片">
         <article class="card">
           <div class="label">Document 01</div>
           <h2>Harness</h2>
           <p>
-            A structured entry point for Prompt, Context, Harness, agent collaboration, and practical workflow notes, with both page and PDF access.
+            收錄 Prompt、Context、Harness、Agent 協作與實務工作流說明，可直接開啟頁面或 PDF 閱讀。
           </p>
           <div class="card-actions">
-            <a class="inline-pill" href="./harness-en.html">Open Page</a>
-            <a class="inline-pill" href="./harness.pdf" target="_blank" rel="noreferrer">Open PDF</a>
+            <a class="inline-pill" href="./harnessZH.html">開啟頁面</a>
+            <a class="inline-pill" href="./harness.pdf" target="_blank" rel="noreferrer">開啟 PDF</a>
           </div>
         </article>
       </section>
@@ -383,7 +393,7 @@
       function setTheme(theme) {
         const isDark = theme === "dark";
         body.dataset.theme = theme;
-        themeText.textContent = isDark ? "Dark" : "Light";
+        themeText.textContent = isDark ? "深色" : "淺色";
         themeIcon.textContent = isDark ? "☾" : "☼";
         localStorage.setItem(key, theme);
       }
