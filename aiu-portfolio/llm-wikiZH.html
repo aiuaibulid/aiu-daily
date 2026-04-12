@@ -524,6 +524,7 @@
         <a class="pill" href="./indexZH.html"><span class="mini-dot">AI</span>首頁</a>
         <a class="pill" href="./guideZH.html"><span class="mini-dot">01</span>教學頁</a>
         <a class="pill" href="./llm-wiki-en.html"><span class="mini-dot">EN</span>English</a>
+        <a class="pill" href="./llm-wiki.pdf" target="_blank" rel="noreferrer"><span class="mini-dot">PDF</span>開啟 PDF</a>
         <button class="toggle" id="themeToggle" type="button" aria-label="切換明暗模式">
           <span id="themeText">淺色</span>
           <span class="toggle-dot" id="themeIcon">☼</span>
@@ -541,8 +542,8 @@
           工具使用，以及可重複執行的 Agent 工作流模式。適合先快速掃讀，再當作日常參考頁回來查。
         </p>
         <div class="actions">
-          <a class="cta primary" href="#document">閱讀 Wiki</a>
-          <a class="cta" href="./guideZH.html">回到教學頁</a>
+          <a class="cta primary" href="#document">閱讀文檔</a>
+          <a class="cta" href="./llm-wiki.pdf" target="_blank" rel="noreferrer">下載 PDF</a>
         </div>
         <div class="meta">
           <span>模型</span>
@@ -655,40 +656,26 @@
 
     <section id="document">
       <div class="section-head">
-        <div class="label">03 / Application</div>
+        <div class="label">03 / Document</div>
         <div>
-          <h2>怎麼把這份 wiki 用進真實團隊。</h2>
+          <h2>直接在頁面內閱讀 PDF。</h2>
           <p>
-            把這頁當成入口頁最合適。之後若需要更深內容，再往下拆成 evaluation、安全、retrieval、memory
-            或特定領域工作流的子頁即可。
+            下面嵌入的是原始 PDF。你可以先用這個頁面快速掌握框架，再往下閱讀，
+            或另開 PDF 做完整瀏覽。
           </p>
         </div>
       </div>
 
       <div class="doc-frame">
-        <div class="grid-3">
-          <article class="card">
-            <div class="label">Use Case 01</div>
-            <h3>團隊 Onboarding</h3>
-            <p>在新成員開始改 prompt、寫文檔或接自動化流程前，先建立共同心智模型。</p>
-          </article>
-          <article class="card">
-            <div class="label">Use Case 02</div>
-            <h3>Prompt Review</h3>
-            <p>當結果不理想時，可快速判斷問題是 prompt、context、模型選擇，還是缺少檢查機制。</p>
-          </article>
-          <article class="card">
-            <div class="label">Use Case 03</div>
-            <h3>Workflow Design</h3>
-            <p>可用這頁去規劃搜尋、改檔、測試、審批與交接應該落在工作流的哪一段。</p>
-          </article>
+        <div class="pdf-shell">
+          <iframe src="./llm-wiki.pdf#view=FitH" title="LLM Wiki PDF"></iframe>
         </div>
       </div>
     </section>
 
     <footer class="footer">
       <div>AIU / LLM Wiki</div>
-      <div>中文頁面 / 深淺模式 / 雙語導覽 / 無需 PDF</div>
+      <div>中文頁面 / 深淺模式 / 內嵌 PDF / 雙語導覽</div>
     </footer>
   </div>
 

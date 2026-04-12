@@ -513,6 +513,7 @@
         <a class="pill" href="./index.html"><span class="mini-dot">AI</span>Home</a>
         <a class="pill" href="./guide-en.html"><span class="mini-dot">01</span>Guide</a>
         <a class="pill" href="./llm-wikiZH.html"><span class="mini-dot">中</span>中文版</a>
+        <a class="pill" href="./llm-wiki.pdf" target="_blank" rel="noreferrer"><span class="mini-dot">PDF</span>Open PDF</a>
         <button class="toggle" id="themeToggle" type="button" aria-label="Toggle light and dark mode">
           <span id="themeText">Light</span>
           <span class="toggle-dot" id="themeIcon">☼</span>
@@ -531,8 +532,8 @@
           It is meant to be skimmed first and revisited as a working reference.
         </p>
         <div class="actions">
-          <a class="cta primary" href="#document">Read the wiki</a>
-          <a class="cta" href="./guide-en.html">Back to Guide</a>
+          <a class="cta primary" href="#document">Read the document</a>
+          <a class="cta" href="./llm-wiki.pdf" target="_blank" rel="noreferrer">Download PDF</a>
         </div>
         <div class="meta">
           <span>Models</span>
@@ -649,40 +650,26 @@
 
     <section id="document">
       <div class="section-head">
-        <div class="label">03 / Application</div>
+        <div class="label">03 / Document</div>
         <div>
-          <h2>How to use this wiki in a real team.</h2>
+          <h2>Read the PDF directly inside the page.</h2>
           <p>
-            Treat this page as a front door. It works well as a shared baseline before deeper pages
-            are created for evaluation, safety, retrieval, memory, or domain-specific workflows.
+            The original PDF is embedded below. Use this page for a quick conceptual pass, then continue
+            reading here or open the PDF separately for the full document.
           </p>
         </div>
       </div>
 
       <div class="doc-frame">
-        <div class="grid-3">
-          <article class="card">
-            <div class="label">Use Case 01</div>
-            <h3>Team Onboarding</h3>
-            <p>Give new collaborators a shared mental model before they edit prompts, docs, or automation steps.</p>
-          </article>
-          <article class="card">
-            <div class="label">Use Case 02</div>
-            <h3>Prompt Review</h3>
-            <p>Use the page to diagnose whether a weak result comes from the prompt, missing context, model choice, or absent checks.</p>
-          </article>
-          <article class="card">
-            <div class="label">Use Case 03</div>
-            <h3>Workflow Design</h3>
-            <p>Map where search, edits, tests, approvals, and handoffs belong in a stable LLM-assisted delivery flow.</p>
-          </article>
+        <div class="pdf-shell">
+          <iframe src="./llm-wiki.pdf#view=FitH" title="LLM Wiki PDF"></iframe>
         </div>
       </div>
     </section>
 
     <footer class="footer">
       <div>AIU / LLM Wiki</div>
-      <div>English Page / Dark Mode / Bilingual Navigation / No PDF Required</div>
+      <div>English Page / Dark Mode / Embedded PDF / Bilingual Navigation</div>
     </footer>
   </div>
 
