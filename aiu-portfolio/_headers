@@ -28,8 +28,17 @@
 /harness-en.html
   Cache-Control: public, max-age=0, must-revalidate
 
+/ai-agentZH.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/ai-agent-en.html
+  Cache-Control: public, max-age=0, must-revalidate
+
 /404.html
   Cache-Control: public, max-age=0, must-revalidate
 
 /harness.pdf
+  Cache-Control: public, max-age=86400
+
+/ai-agent.pdf
   Cache-Control: public, max-age=86400

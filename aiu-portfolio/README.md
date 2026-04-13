@@ -9,6 +9,9 @@ This folder is a static site for Cloudflare Pages.
 - `guide-en.html`: English guide library
 - `guide.html`: legacy Traditional Chinese guide page
 - `guideZH.html`: Traditional Chinese guide library
+- `ai-agent-en.html`: English AI Agent document page
+- `ai-agentZH.html`: Traditional Chinese AI Agent document page
+- `ai-agent.pdf`: Embedded and downloadable AI Agent PDF
 - `harness-en.html`: English Harness document page
 - `harness.html`: legacy Traditional Chinese Harness page
 - `harnessZH.html`: Traditional Chinese Harness document page
@@ -50,6 +53,10 @@ This keeps unrelated file changes from triggering a new portfolio deployment.
 - `/harness/zh` -> Chinese Harness page
 - `/harnessZH` -> Traditional Chinese Harness page
 - `/harness/pdf` -> PDF
+- `/ai-agent` -> Traditional Chinese AI Agent page
+- `/ai-agent/zh` -> Chinese AI Agent page
+- `/ai-agent/en` -> English AI Agent page
+- `/ai-agent/pdf` -> PDF
 
 ## Notes before production
 
